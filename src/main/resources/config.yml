@@ -1,0 +1,119 @@
+# Configuracao do AlkaKits
+
+voucher:
+  material: PAPER
+
+# Concessoes automaticas - so os dois gatilhos que existem de verdade (ver analise
+# do AdvancedKits, 2026-08-13): primeiro join do jogador e cada respawn.
+gatilhos:
+  primeiro-join:
+    - kit: iniciante
+      nivel: 1
+  respawn: []
+
+menu:
+  categorias-titulo: "<gradient:#FFAA00:#FFE055><bold>Kits</bold></gradient>"
+  categorias-linhas: 3
+  kits-titulo: "<gold>Kits"
+  kits-linhas: 4
+  preview-titulo: "<gold>Preview do Kit"
+  preview-linhas: 5
+  # Vidro de preenchimento das bordas, nas 3 telas - troque sem precisar recompilar.
+  filler-material: GRAY_STAINED_GLASS_PANE
+
+# Feedback por resultado de clique (som/particula/titulo/fireworks/comandos) - um
+# default GLOBAL por status, nunca por kit/nivel individual (ver FeedbackService).
+feedback:
+  CLAIMABLE:
+    som:
+      nome: ENTITY_PLAYER_LEVELUP
+      volume: 1.0
+      pitch: 1.0
+    particula:
+      nome: HAPPY_VILLAGER
+      quantidade: 20
+    titulo:
+      texto: "<green><bold>Kit recebido!</bold></green>"
+      subtitulo: "<gray><kit> - nivel <nivel>"
+      fade-in: 5
+      stay: 30
+      fade-out: 10
+    fireworks:
+      ativo: true
+      tipo: BALL_LARGE
+      cores: ["GREEN", "LIME"]
+      trail: true
+      flicker: false
+      potencia: 1
+    comandos: []
+
+  PURCHASABLE:
+    som:
+      nome: ENTITY_EXPERIENCE_ORB_PICKUP
+      volume: 1.0
+      pitch: 1.2
+    particula:
+      nome: TOTEM_OF_UNDYING
+      quantidade: 15
+    titulo:
+      texto: "<gold><bold>Nivel comprado!</bold></gold>"
+      subtitulo: "<gray><kit> - nivel <nivel>"
+      fade-in: 5
+      stay: 30
+      fade-out: 10
+    fireworks:
+      ativo: true
+      tipo: STAR
+      cores: ["YELLOW", "ORANGE"]
+      trail: false
+      flicker: true
+      potencia: 1
+    comandos: []
+
+  LOCKED:
+    som:
+      nome: BLOCK_NOTE_BLOCK_BASS
+      volume: 1.0
+      pitch: 0.7
+
+  REQUIREMENT_NOT_MET:
+    som:
+      nome: BLOCK_NOTE_BLOCK_BASS
+      volume: 1.0
+      pitch: 0.7
+
+  ON_BUY_COOLDOWN:
+    som:
+      nome: BLOCK_NOTE_BLOCK_BASS
+      volume: 1.0
+      pitch: 1.0
+
+  ON_CLAIM_COOLDOWN:
+    som:
+      nome: BLOCK_NOTE_BLOCK_BASS
+      volume: 1.0
+      pitch: 1.0
+
+  INSUFFICIENT_FUNDS:
+    som:
+      nome: ENTITY_VILLAGER_NO
+      volume: 1.0
+      pitch: 1.0
+
+  FULL_INVENTORY:
+    som:
+      nome: ENTITY_VILLAGER_NO
+      volume: 1.0
+      pitch: 0.8
+
+  MAX_USES_REACHED:
+    som:
+      nome: BLOCK_NOTE_BLOCK_BASS
+      volume: 1.0
+      pitch: 0.5
+
+  MAX_LEVEL_REACHED:
+    som:
+      nome: BLOCK_NOTE_BLOCK_PLING
+      volume: 1.0
+      pitch: 1.0

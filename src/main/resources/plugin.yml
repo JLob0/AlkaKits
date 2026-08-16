@@ -1,0 +1,26 @@
+name: AlkaKits
+version: '${version}'
+main: com.alkacode.kits.AlkaKitsPlugin
+api-version: '1.21'
+author: MestreDEV
+description: Kits com niveis/upgrade pago, requisitos, vouchers e gatilhos automaticos. Sobre o AlkaCore (banco/HikariCP, GUI) e AlkaEconomy (custo de upgrade).
+depend: [AlkaCore, AlkaEconomy]
+softdepend: [PlaceholderAPI]
+
+commands:
+  kits:
+    description: Abre o menu de kits, reivindica ou compra upgrade
+    usage: /<command> [kit|resgatar]
+    permission: alkakits.usar
+  alkakits:
+    description: Comandos administrativos do AlkaKits
+    usage: /<command> <reload|give|reset|setlevel|voucher>
+    permission: alkakits.admin
+
+permissions:
+  alkakits.usar:
+    description: Permite usar /kits.
+    default: true
+  alkakits.admin:
+    description: Acesso administrativo completo ao AlkaKits.
+    default: op

@@ -1,0 +1,551 @@
+# Kits do AlkaKits - crie quantos quiser, niveis 1-indexados sem buracos por kit.
+# "requisitos" no kit inteiro se somam aos do nivel individual. Categoria "booster"
+# e so um kit gateado por permissao normal (alkakits.booster) - o grupo do LuckPerms
+# ja e sincronizado pelo yDiscordHook, o AlkaKits nao fala com Discord.
+#
+# Kits vip/vip+/mvp/mvp+/alka/drakkar migrados do AlkaVips em 2026-08-13 (o
+# KitManager/VipKit/KitsMenu proprios do AlkaVips foram removidos - ver memoria
+# project-alkakits) - so os RECORRENTES (diario/semanal/mensal). Gateados via
+# requisito PLACEHOLDER: %alkavips_has_vip_<tier>% (true/false, TODOS os VIPs ativos
+# do jogador, nao so o "selecionado"). <tier> e sempre o vipTypeId cru do AlkaVips:
+# vip, vip+, mvp, mvp+, alka, drakkar (NAO o nome do grupo do LuckPerms, que e
+# diferente: vipplus/mvpplus).
+#
+# O "kit de ativacao" (bonus unico ao comprar 30+ dias de VIP) FICOU no AlkaVips
+# mesmo, nao migrou pra ca - decisao deliberada (2026-08-13): se um servidor rodar
+# AlkaVips sem o AlkaKits instalado, o bonus de ativacao ainda precisa funcionar,
+# ja que e parte do fluxo de compra do VIP em si. Ver ActivationService#
+# deliverActivationBonus e vips.yml -> activation-bonus por tier no AlkaVips.
+
+categorias:
+  free:
+    nome: "<green>Kits Gratis"
+    slot: 10
+    icone:
+      material: GRASS_BLOCK
+      name: "<green><bold>✦ Kits Gratis ✦</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kits disponiveis pra"
+        - "<gray>todos os jogadores."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+  vip:
+    nome: "<#55FF55>Kits VIP"
+    slot: 11
+    icone:
+      material: EMERALD
+      name: "<gradient:#55FF55:#00FF00><bold>✦ Kits VIP ✦</bold></gradient>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kits recorrentes exclusivos"
+        - "<gray>pra membros <#55FF55>VIP<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+  'vip+':
+    nome: "<#55FF55>Kits VIP+"
+    slot: 12
+    icone:
+      material: EMERALD_BLOCK
+      name: "<gradient:#55FF55:#00FF00><bold>✦ Kits VIP+ ✦</bold></gradient>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kits recorrentes exclusivos"
+        - "<gray>pra membros <#55FF55>VIP+<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+  mvp:
+    nome: "<#55AAFF>Kits MVP"
+    slot: 13
+    icone:
+      material: DIAMOND
+      name: "<gradient:#55AAFF:#0055FF><bold>✦ Kits MVP ✦</bold></gradient>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kits recorrentes exclusivos"
+        - "<gray>pra membros <#55AAFF>MVP<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+  'mvp+':
+    nome: "<#55AAFF>Kits MVP+"
+    slot: 14
+    icone:
+      material: DIAMOND_BLOCK
+      name: "<gradient:#FF55FF:#AA00AA><bold>✦ Kits MVP+ ✦</bold></gradient>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kits recorrentes exclusivos"
+        - "<gray>pra membros <#FF55FF>MVP+<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+  alka:
+    nome: "<#FFD700>Kits ALKA"
+    slot: 15
+    icone:
+      material: NETHERITE_INGOT
+      name: "<gradient:#FFD700:#FF8C00><bold>✦ Kits ALKA ✦</bold></gradient>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kits recorrentes exclusivos"
+        - "<gray>pra membros <#FFD700>ALKA<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+  drakkar:
+    nome: "<#FF0000>Kits DRAKKAR"
+    slot: 16
+    icone:
+      material: NETHERITE_BLOCK
+      name: "<gradient:#FF0000:#8B0000><bold>✦ Kits DRAKKAR ✦</bold></gradient>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kits recorrentes exclusivos"
+        - "<gray>pro tier maximo, <#FF0000>DRAKKAR<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+  booster:
+    nome: "<light_purple>Kits Booster"
+    slot: 17
+    icone:
+      material: DIAMOND
+      name: "<gradient:#C87BFF:#7B2FFF><bold>✦ Kits Booster ✦</bold></gradient>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kits exclusivos pra quem"
+        - "<gray>impulsiona o servidor"
+        - "<gray>no Discord."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+
+kits:
+  iniciante:
+    categoria: free
+    slot: 10
+    icone:
+      material: LEATHER_CHESTPLATE
+      name: "<white><bold>Kit Iniciante</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kit basico pra comecar"
+        - "<gray>a sua jornada."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos: []
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: DAILY
+        usos-maximos: -1
+        itens:
+          - material: BREAD
+            amount: 8
+          - material: WOODEN_SWORD
+          - material: WOODEN_PICKAXE
+          - material: WOODEN_AXE
+        armadura:
+          peitoral:
+            material: LEATHER_CHESTPLATE
+        comandos: []
+
+  booster:
+    categoria: booster
+    slot: 13
+    icone:
+      material: NETHER_STAR
+      name: "<gradient:#C87BFF:#7B2FFF><bold>Kit Booster</bold></gradient>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<light_purple>Obrigado por impulsionar"
+        - "<light_purple>o servidor!"
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos:
+      - tipo: PERMISSION
+        valor: "alkakits.booster"
+    niveis:
+      1:
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: MONTHLY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND
+            amount: 16
+          - material: NETHERITE_SCRAP
+            amount: 2
+        comandos: []
+
+  # -------------------------------------------------------- kits recorrentes de VIP
+  # Portados 1:1 do antigo kits.yml do AlkaVips (mesmos itens/cooldowns). Nivel unico
+  # (sem upgrade pago - o "pagamento" ja foi a compra do VIP em si).
+
+  vip_diario:
+    categoria: vip
+    slot: 10
+    icone:
+      material: EMERALD
+      name: "<#55FF55><bold>Kit VIP Diario</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa diaria pros"
+        - "<gray>membros <#55FF55>VIP<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos:
+      - tipo: PLACEHOLDER
+        valor: "%alkavips_has_vip_vip%"
+        operador: EQUALS
+        comparar: "true"
+    niveis:
+      1:
+        moeda: null
+        custo: 0
+        cooldown-tipo: DAILY
+        usos-maximos: -1
+        itens:
+          - material: EMERALD
+            amount: 4
+        comandos: []
+
+  'vip+_diario':
+    categoria: 'vip+'
+    slot: 10
+    icone:
+      material: EMERALD
+      name: "<#55FF55><bold>Kit VIP+ Diario</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa diaria pros"
+        - "<gray>membros <#55FF55>VIP+<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos:
+      - tipo: PLACEHOLDER
+        valor: "%alkavips_has_vip_vip+%"
+        operador: EQUALS
+        comparar: "true"
+    niveis:
+      1:
+        moeda: null
+        custo: 0
+        cooldown-tipo: DAILY
+        usos-maximos: -1
+        itens:
+          - material: EMERALD
+            amount: 8
+        comandos: []
+
+  'vip+_semanal':
+    categoria: 'vip+'
+    slot: 11
+    icone:
+      material: EMERALD_BLOCK
+      name: "<#55FF55><bold>Kit VIP+ Semanal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa semanal pros"
+        - "<gray>membros <#55FF55>VIP+<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos:
+      - tipo: PLACEHOLDER
+        valor: "%alkavips_has_vip_vip+%"
+        operador: EQUALS
+        comparar: "true"
+    niveis:
+      1:
+        moeda: null
+        custo: 0
+        cooldown-tipo: WEEKLY
+        usos-maximos: -1
+        itens:
+          - material: EMERALD_BLOCK
+            amount: 2
+        comandos: []
+
+  mvp_diario:
+    categoria: mvp
+    slot: 10
+    icone:
+      material: DIAMOND
+      name: "<#55AAFF><bold>Kit MVP Diario</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa diaria pros"
+        - "<gray>membros <#55AAFF>MVP<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos:
+      - tipo: PLACEHOLDER
+        valor: "%alkavips_has_vip_mvp%"
+        operador: EQUALS
+        comparar: "true"
+    niveis:
+      1:
+        moeda: null
+        custo: 0
+        cooldown-tipo: DAILY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND
+            amount: 4
+        comandos: []
+
+  mvp_semanal:
+    categoria: mvp
+    slot: 11
+    icone:
+      material: DIAMOND_BLOCK
+      name: "<#55AAFF><bold>Kit MVP Semanal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa semanal pros"
+        - "<gray>membros <#55AAFF>MVP<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos:
+      - tipo: PLACEHOLDER
+        valor: "%alkavips_has_vip_mvp%"
+        operador: EQUALS
+        comparar: "true"
+    niveis:
+      1:
+        moeda: null
+        custo: 0
+        cooldown-tipo: WEEKLY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_BLOCK
+            amount: 1
+        comandos: []
+
+  'mvp+_diario':
+    categoria: 'mvp+'
+    slot: 10
+    icone:
+      material: DIAMOND
+      name: "<#FF55FF><bold>Kit MVP+ Diario</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa diaria pros"
+        - "<gray>membros <#FF55FF>MVP+<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos:
+      - tipo: PLACEHOLDER
+        valor: "%alkavips_has_vip_mvp+%"
+        operador: EQUALS
+        comparar: "true"
+    niveis:
+      1:
+        moeda: null
+        custo: 0
+        cooldown-tipo: DAILY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND
+            amount: 8
+        comandos: []
+
+  'mvp+_semanal':
+    categoria: 'mvp+'
+    slot: 11
+    icone:
+      material: DIAMOND_BLOCK
+      name: "<#FF55FF><bold>Kit MVP+ Semanal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa semanal pros"
+        - "<gray>membros <#FF55FF>MVP+<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos:
+      - tipo: PLACEHOLDER
+        valor: "%alkavips_has_vip_mvp+%"
+        operador: EQUALS
+        comparar: "true"
+    niveis:
+      1:
+        moeda: null
+        custo: 0
+        cooldown-tipo: WEEKLY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_BLOCK
+            amount: 2
+        comandos: []
+
+  'mvp+_mensal':
+    categoria: 'mvp+'
+    slot: 12
+    icone:
+      material: NETHERITE_SCRAP
+      name: "<#FF55FF><bold>Kit MVP+ Mensal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa mensal pros"
+        - "<gray>membros <#FF55FF>MVP+<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos:
+      - tipo: PLACEHOLDER
+        valor: "%alkavips_has_vip_mvp+%"
+        operador: EQUALS
+        comparar: "true"
+    niveis:
+      1:
+        moeda: null
+        custo: 0
+        cooldown-tipo: MONTHLY
+        usos-maximos: -1
+        itens:
+          - material: NETHERITE_SCRAP
+            amount: 2
+        comandos: []
+
+  alka_diario:
+    categoria: alka
+    slot: 10
+    icone:
+      material: NETHERITE_SCRAP
+      name: "<#FFD700><bold>Kit ALKA Diario</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa diaria pros"
+        - "<gray>membros <#FFD700>ALKA<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos:
+      - tipo: PLACEHOLDER
+        valor: "%alkavips_has_vip_alka%"
+        operador: EQUALS
+        comparar: "true"
+    niveis:
+      1:
+        moeda: null
+        custo: 0
+        cooldown-tipo: DAILY
+        usos-maximos: -1
+        itens:
+          - material: NETHERITE_SCRAP
+            amount: 2
+        comandos: []
+
+  alka_semanal:
+    categoria: alka
+    slot: 11
+    icone:
+      material: NETHERITE_INGOT
+      name: "<#FFD700><bold>Kit ALKA Semanal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa semanal pros"
+        - "<gray>membros <#FFD700>ALKA<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos:
+      - tipo: PLACEHOLDER
+        valor: "%alkavips_has_vip_alka%"
+        operador: EQUALS
+        comparar: "true"
+    niveis:
+      1:
+        moeda: null
+        custo: 0
+        cooldown-tipo: WEEKLY
+        usos-maximos: -1
+        itens:
+          - material: NETHERITE_INGOT
+            amount: 1
+        comandos: []
+
+  alka_mensal:
+    categoria: alka
+    slot: 12
+    icone:
+      material: NETHERITE_BLOCK
+      name: "<#FFD700><bold>Kit ALKA Mensal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa mensal pros"
+        - "<gray>membros <#FFD700>ALKA<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos:
+      - tipo: PLACEHOLDER
+        valor: "%alkavips_has_vip_alka%"
+        operador: EQUALS
+        comparar: "true"
+    niveis:
+      1:
+        moeda: null
+        custo: 0
+        cooldown-tipo: MONTHLY
+        usos-maximos: -1
+        itens:
+          - material: NETHERITE_BLOCK
+            amount: 1
+        comandos: []
+
+  drakkar_diario:
+    categoria: drakkar
+    slot: 10
+    icone:
+      material: NETHERITE_INGOT
+      name: "<#FF0000><bold>Kit DRAKKAR Diario</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa diaria pro"
+        - "<gray>tier maximo, <#FF0000>DRAKKAR<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos:
+      - tipo: PLACEHOLDER
+        valor: "%alkavips_has_vip_drakkar%"
+        operador: EQUALS
+        comparar: "true"
+    niveis:
+      1:
+        moeda: null
+        custo: 0
+        cooldown-tipo: DAILY
+        usos-maximos: -1
+        itens:
+          - material: NETHERITE_INGOT
+            amount: 2
+        comandos: []
+
+  drakkar_semanal:
+    categoria: drakkar
+    slot: 11
+    icone:
+      material: NETHERITE_BLOCK
+      name: "<#FF0000><bold>Kit DRAKKAR Semanal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa semanal pro"
+        - "<gray>tier maximo, <#FF0000>DRAKKAR<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos:
+      - tipo: PLACEHOLDER
+        valor: "%alkavips_has_vip_drakkar%"
+        operador: EQUALS
+        comparar: "true"
+    niveis:
+      1:
+        moeda: null
+        custo: 0
+        cooldown-tipo: WEEKLY
+        usos-maximos: -1
+        itens:
+          - material: NETHERITE_BLOCK
+            amount: 1
+        comandos: []
+
+  drakkar_mensal:
+    categoria: drakkar
+    slot: 12
+    icone:
+      material: DRAGON_BREATH
+      name: "<#FF0000><bold>Kit DRAKKAR Mensal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa mensal pro"
+        - "<gray>tier maximo, <#FF0000>DRAKKAR<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos:
+      - tipo: PLACEHOLDER
+        valor: "%alkavips_has_vip_drakkar%"
+        operador: EQUALS
+        comparar: "true"
+    niveis:
+      1:
+        moeda: null
+        custo: 0
+        cooldown-tipo: MONTHLY
+        usos-maximos: -1
+        itens:
+          - material: DRAGON_BREATH
+            amount: 8
+        comandos: []
