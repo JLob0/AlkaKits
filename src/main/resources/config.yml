@@ -12,13 +12,8 @@ gatilhos:
   respawn: []
 
 menu:
-  categorias-titulo: "<gradient:#FFAA00:#FFE055><bold>Kits</bold></gradient>"
-  categorias-linhas: 3
-  kits-titulo: "<gold>Kits"
-  kits-linhas: 4
-  preview-titulo: "<gold>Preview do Kit"
-  preview-linhas: 5
   # Vidro de preenchimento das bordas, nas 3 telas - troque sem precisar recompilar.
+  # Titulo/linhas/layout de cada GUI agora ficam em menus.yml/gui-layouts.yml (R8).
   filler-material: GRAY_STAINED_GLASS_PANE
 
 # Feedback por resultado de clique (som/particula/titulo/fireworks/comandos) - um

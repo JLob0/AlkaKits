@@ -5,7 +5,9 @@ import com.alkacode.core.plugin.AlkaPlugin;
 import com.alkacode.economy.AlkaEconomyPlugin;
 import com.alkacode.kits.command.CommandAlkaKits;
 import com.alkacode.kits.command.CommandKits;
+import com.alkacode.kits.config.MenuConfig;
 import com.alkacode.kits.database.KitsRepository;
+import com.alkacode.kits.gui.layout.GuiLayoutLoader;
 import com.alkacode.kits.listener.GrantTriggerListener;
 import com.alkacode.kits.listener.KitProgressListener;
 import com.alkacode.kits.listener.VoucherRedeemListener;
@@ -30,10 +32,23 @@ import org.bukkit.entity.Player;
  */
 public final class AlkaKitsPlugin extends AlkaPlugin {
 
+    private MenuConfig menuConfig;
+    private GuiLayoutLoader guiLayoutLoader;
+
+    public MenuConfig getMenuConfig() {
+        return menuConfig;
+    }
+
+    public GuiLayoutLoader getGuiLayoutLoader() {
+        return guiLayoutLoader;
+    }
+
     @Override
     protected void onPluginEnable() {
         AlkaAPI api = getAlkaAPI();
         Messages messages = new Messages(this);
+        menuConfig = new MenuConfig(this);
+        guiLayoutLoader = new GuiLayoutLoader(this);
 
         if (!(getServer().getPluginManager().getPlugin("AlkaEconomy") instanceof AlkaEconomyPlugin alkaEconomy)) {
             getLogger().severe("AlkaEconomy e obrigatorio e nao foi encontrado. Desativando.");

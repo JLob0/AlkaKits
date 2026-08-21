@@ -1,0 +1,37 @@
+# AlkaKits - Layouts de GUI (posicoes configuraveis)
+# Regras:
+#   _ = vazio (preenchido pelo filler de config.yml: menu.filler-material)
+#   Letras = slots controlados pelo Java (conteudo/acao fixa) - texto/icone de cada
+#            letra fica em menus.yml (chave descritiva, nao a letra em si)
+#   Categorias/kits em si (icone+slot) sao dinamicos, definidos em kits.yml por
+#   categoria/kit - nao aparecem neste layout.
+
+alkakits-categorias:
+  rows: 3
+  layout:
+    - "____H____"
+    - "_________"
+    - "_________"
+  # H=header
+
+alkakits-kits:
+  rows: 4
+  layout:
+    - "____H____"
+    - "_________"
+    - "_________"
+    - "____V____"
+  # H=header (icone da categoria), V=voltar
+
+alkakits-preview:
+  rows: 5
+  layout:
+    - "____H____"
+    - "_0000000_"
+    - "_WCLBO___"
+    - "__P_A_N__"
+    - "____V____"
+  # H=header/info do nivel, 0=itens do nivel (dinamico, ate 7), W=capacete,
+  # C=peitoral, L=calca, B=bota, O=offhand (so aparecem se o nivel tiver),
+  # P=nivel-anterior, A=botao de acao (reivindicar/comprar/status), N=proximo-nivel,
+  # V=voltar

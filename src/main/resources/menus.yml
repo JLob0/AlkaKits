@@ -1,0 +1,143 @@
+# ============================================================
+# AlkaKits - menus.yml
+# Titulos, icones (material), nomes e lores das 3 GUIs.
+# Placeholders entre {} sao trocados na hora. MiniMessage.
+# Layout/posicao dos slots fica em gui-layouts.yml - aqui e so
+# icone+texto, casado pelas mesmas chaves que o Java usa no setAt().
+# ============================================================
+
+common:
+  voltar:
+    material: ARROW
+    name: "<gray><bold>← Voltar</bold>"
+    lore:
+      - "<dark_gray>Clique para voltar"
+
+# ------------------------- Categorias -------------------------
+alkakits-categorias:
+  title: "<gradient:#FFAA00:#FFE055><bold>Kits</bold></gradient>"
+  header:
+    material: CHEST
+    name: "<gradient:#FFAA00:#FFE055><bold>✦ Central de Kits ✦</bold></gradient>"
+    lore:
+      - "<dark_gray><st>――――――――――――――――――――――</st>"
+      - "<gray>Escolha uma categoria abaixo"
+      - "<gray>para ver os kits disponiveis."
+      - ""
+      - "<yellow>➤ <gray>Kits gratuitos, de VIP e"
+      - "<yellow>➤ <gray>bonus exclusivos te esperam!"
+      - "<dark_gray><st>――――――――――――――――――――――</st>"
+
+# ------------------------- Kits (por categoria) -------------------------
+alkakits-kits:
+  title: "<gold>Kits"
+  header:
+    # material real vem do icone da categoria (kits.yml) - so a lore e daqui.
+    lore:
+      - "<dark_gray><st>――――――――――――――――――――――</st>"
+      - "<gray>Escolha uma categoria abaixo"
+      - "<gray>para ver os kits disponiveis."
+      - ""
+      - "<yellow>➤ <gray>Kits gratuitos, de VIP e"
+      - "<yellow>➤ <gray>bonus exclusivos te esperam!"
+      - "<dark_gray><st>――――――――――――――――――――――</st>"
+  kit-nivel-lore:
+    lore:
+      - ""
+      - "<dark_gray><st>――――――――――――――――――</st>"
+      - "<gray>Nivel atual: <white>{atual}<gray>/<white>{maximo}"
+      - "<yellow>➤ <gray>Clique para abrir"
+
+# ------------------------- Preview de nivel -------------------------
+alkakits-preview:
+  title: "<gold>Preview do Kit"
+  header:
+    # material real vem do icone do kit (kits.yml) - so nome/lore sao daqui.
+    name: "<gradient:#FFAA00:#FFE055><bold>Nivel {nivel}/{maximo}</bold></gradient>"
+    lore:
+      - "<dark_gray><st>――――――――――――――――――</st>"
+      - "<gray>Use as setas pra navegar"
+      - "<gray>entre os niveis deste kit."
+      - "<dark_gray><st>――――――――――――――――――</st>"
+  nav-anterior:
+    material: ARROW
+    name: "<gray><bold>← Nivel anterior</bold>"
+  nav-proximo:
+    material: ARROW
+    name: "<gray><bold>Proximo nivel →</bold>"
+  nivel-superado:
+    material: GRAY_DYE
+    name: "<dark_gray>✔ Nivel ja superado"
+    lore:
+      - "<gray>Voce ja esta num nivel mais"
+      - "<gray>avancado deste kit."
+  voltar:
+    material: OAK_DOOR
+    name: "<gray><bold>← Voltar</bold>"
+    lore:
+      - "<dark_gray>Clique para voltar"
+  botao:
+    CLAIMABLE:
+      material: EMERALD
+      name: "<gradient:#55FF55:#00FF00><bold>✔ Clique para reivindicar!</bold></gradient>"
+      lore:
+        - "<gray>Seu kit esta pronto."
+        - "<gray>Clique para receber os itens agora."
+    PURCHASABLE:
+      material: EMERALD
+      name: "<gradient:#FFD700:#FFA500><bold>💰 Clique para comprar!</bold></gradient>"
+      lore:
+        - "<gray>Desbloqueie o proximo nivel"
+        - "<gray>deste kit."
+        - ""
+        - "<yellow>Preco: <gold>{preco} <white>{moeda}"
+    LOCKED:
+      material: BARRIER
+      name: "<red>✖ Voce nao tem permissao."
+      lore:
+        - "<gray>Este kit exige uma permissao"
+        - "<gray>que voce ainda nao possui."
+    REQUIREMENT_NOT_MET:
+      material: BARRIER
+      name: "<red>✖ Requisitos nao cumpridos."
+      lore:
+        - "<gray>Voce nao cumpre todos os"
+        - "<gray>requisitos deste nivel."
+    ON_BUY_COOLDOWN:
+      material: CLOCK
+      name: "<yellow>⏳ Aguarde pra comprar de novo."
+      lore:
+        - "<gray>Voce comprou um nivel deste"
+        - "<gray>kit recentemente."
+    ON_CLAIM_COOLDOWN:
+      material: CLOCK
+      name: "<yellow>⏳ Aguarde o cooldown."
+      lore:
+        - "<gray>Voce ja reivindicou este"
+        - "<gray>kit recentemente."
+    INSUFFICIENT_FUNDS:
+      material: GOLD_NUGGET
+      name: "<red>✖ Saldo insuficiente."
+      lore:
+        - "<gray>Voce nao tem dinheiro suficiente"
+        - "<gray>pra comprar este nivel."
+        - ""
+        - "<yellow>Preco: <gold>{preco} <white>{moeda}"
+    FULL_INVENTORY:
+      material: CHEST
+      name: "<red>✖ Inventario cheio."
+      lore:
+        - "<gray>Abra espaco no seu inventario"
+        - "<gray>antes de reivindicar."
+    MAX_USES_REACHED:
+      material: REDSTONE_BLOCK
+      name: "<red>✖ Usos esgotados."
+      lore:
+        - "<gray>Voce ja usou este kit o maximo"
+        - "<gray>de vezes permitido."
+    MAX_LEVEL_REACHED:
+      material: NETHER_STAR
+      name: "<gray>✦ Nivel maximo atingido."
+      lore:
+        - "<gray>Este kit nao tem mais niveis"
+        - "<gray>para desbloquear."

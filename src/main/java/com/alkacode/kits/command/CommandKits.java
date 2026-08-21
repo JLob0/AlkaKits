@@ -1,5 +1,6 @@
 package com.alkacode.kits.command;
 
+import com.alkacode.kits.AlkaKitsPlugin;
 import com.alkacode.kits.gui.CategoriesMenu;
 import com.alkacode.kits.gui.KitsMenu;
 import com.alkacode.kits.gui.PreviewMenu;
@@ -16,7 +17,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 import java.util.Locale;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 public final class CommandKits implements CommandExecutor, TabCompleter {
 
-    private final JavaPlugin plugin;
+    private final AlkaKitsPlugin plugin;
     private final KitManager kitManager;
     private final KitProgressManager progressManager;
     private final KitClaimService claimService;
@@ -32,7 +32,7 @@ public final class CommandKits implements CommandExecutor, TabCompleter {
     private final VoucherManager voucherManager;
     private final Messages messages;
 
-    public CommandKits(JavaPlugin plugin, KitManager kitManager, KitProgressManager progressManager,
+    public CommandKits(AlkaKitsPlugin plugin, KitManager kitManager, KitProgressManager progressManager,
                         KitClaimService claimService, KitsEconomyService economyService,
                         VoucherManager voucherManager, Messages messages) {
         this.plugin = plugin;
@@ -86,27 +86,19 @@ public final class CommandKits implements CommandExecutor, TabCompleter {
     }
 
     public void openCategoriesMenu(Player player) {
-        String title = plugin.getConfig().getString("menu.categorias-titulo", "<gold>Kits");
-        int rows = plugin.getConfig().getInt("menu.categorias-linhas", 3);
-        new CategoriesMenu(plugin, player, title, rows, kitManager, messages, this::openKitsMenu).open();
+        new CategoriesMenu(plugin, player, kitManager, this::openKitsMenu).open();
     }
 
     private void openKitsMenu(Player player, String category) {
-        String title = plugin.getConfig().getString("menu.kits-titulo", "<gold>Kits");
-        int rows = plugin.getConfig().getInt("menu.kits-linhas", 4);
-        new KitsMenu(plugin, player, title, rows, category, kitManager, progressManager, claimService, messages,
+        new KitsMenu(plugin, player, category, kitManager, progressManager, claimService,
                 this::openCategoriesMenu, this::openPreviewMenu).open();
     }
 
     private void openPreviewMenu(Player player, Kit kit) {
-        String title = plugin.getConfig().getString("menu.preview-titulo", "<gold>Preview");
-        // 5 linhas (nao 4): com 4, o botao "voltar" (linha final, coluna central) cairia no
-        // mesmo slot 31 do botao de acao (reivindicar/comprar) - ver PreviewMenu.
-        int rows = plugin.getConfig().getInt("menu.preview-linhas", 5);
         KitProgress progress = progressManager.getProgress(player.getUniqueId(), kit.getId());
         int initialLevel = Math.max(1, Math.min(kit.getMaxLevel(), progress.unlockedLevel() + 1));
-        new PreviewMenu(plugin, player, title, rows, kit, initialLevel, claimService, progressManager,
-                economyService, messages, p -> openKitsMenu(p, kit.getCategory())).open();
+        new PreviewMenu(plugin, player, kit, initialLevel, claimService, progressManager,
+                economyService, p -> openKitsMenu(p, kit.getCategory())).open();
     }
 
     @Override
