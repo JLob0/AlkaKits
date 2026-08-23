@@ -3,6 +3,7 @@ package com.alkacode.kits.manager;
 import com.alkacode.kits.model.CooldownType;
 import com.alkacode.kits.model.Kit;
 import com.alkacode.kits.model.KitCategory;
+import com.alkacode.kits.model.KitGroup;
 import com.alkacode.kits.model.KitLevel;
 import com.alkacode.kits.model.Requirement;
 import com.alkacode.kits.util.ItemBuilder;
@@ -31,6 +32,7 @@ public final class KitManager {
     private final JavaPlugin plugin;
     private final Map<String, Kit> kits = new LinkedHashMap<>();
     private final Map<String, KitCategory> categories = new LinkedHashMap<>();
+    private final Map<String, KitGroup> groups = new LinkedHashMap<>();
 
     public KitManager(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -52,8 +54,24 @@ public final class KitManager {
 
         kits.clear();
         categories.clear();
+        groups.clear();
         loadCategories(config.getConfigurationSection("categorias"));
+        loadGroups(config.getConfigurationSection("grupos"));
         loadKits(config.getConfigurationSection("kits"));
+    }
+
+    private void loadGroups(ConfigurationSection section) {
+        if (section == null) {
+            return;
+        }
+        for (String id : section.getKeys(false)) {
+            ConfigurationSection group = section.getConfigurationSection(id);
+            if (group == null) {
+                continue;
+            }
+            ItemStack icon = ItemBuilder.fromConfig(group.getConfigurationSection("icone"), plugin.getLogger());
+            groups.put(id, new KitGroup(id, group.getString("nome", id), icon, group.getInt("slot", 0)));
+        }
     }
 
     private void loadCategories(ConfigurationSection section) {
@@ -88,6 +106,7 @@ public final class KitManager {
 
     private Kit parseKit(String id, ConfigurationSection kitSection) {
         String category = kitSection.getString("categoria", "default");
+        String group = kitSection.getString("grupo");
         ItemStack icon = ItemBuilder.fromConfig(kitSection.getConfigurationSection("icone"), plugin.getLogger());
         List<Requirement> requirements = parseRequirements(kitSection.getMapList("requisitos"));
 
@@ -117,7 +136,7 @@ public final class KitManager {
             }
         }
 
-        return new Kit(id, category, kitSection.getInt("slot", 0), icon, requirements, levels);
+        return new Kit(id, category, group, kitSection.getInt("slot", 0), icon, requirements, levels);
     }
 
     private KitLevel parseLevel(int levelNumber, ConfigurationSection section) {
@@ -153,13 +172,14 @@ public final class KitManager {
         return section == null ? null : ItemBuilder.fromConfig(section, plugin.getLogger());
     }
 
-    /** getMapList() devolve Map cru (nao ConfigurationSection) - embrulha num YamlConfiguration solto pra reusar ItemBuilder.fromConfig sem duplicar o parsing. */
+    /** getMapList() devolve Map cru (nao ConfigurationSection) - embrulha num YamlConfiguration solto pra reusar ItemBuilder.fromConfig sem duplicar o parsing.
+     * IMPORTANTE: usa createSection(path, map) em vez de set() por entrada - set() nao
+     * converte sub-Maps aninhados (ex: "enchantments") em ConfigurationSection, entao
+     * ItemBuilder#fromConfig nunca achava os encantamentos dos itens da lista "itens:"
+     * (armadura escapava do bug pq vem de getConfigurationSection() direto do YAML). */
     private ConfigurationSection toSection(Map<?, ?> raw) {
         YamlConfiguration temp = new YamlConfiguration();
-        for (Map.Entry<?, ?> entry : raw.entrySet()) {
-            temp.set(String.valueOf(entry.getKey()), entry.getValue());
-        }
-        return temp;
+        return temp.createSection("item", raw);
     }
 
     private CooldownType parseCooldownType(String raw) {
@@ -227,5 +247,45 @@ public final class KitManager {
 
     public Map<String, KitCategory> getCategories() {
         return categories;
+    }
+
+    public Map<String, KitGroup> getGroups() {
+        return groups;
+    }
+
+    /** Kits da categoria que NAO pertencem a nenhum grupo - ficam direto na tela da
+     * categoria, sem passar por um sub-menu (ex: "booster_xp" em exclusivos). Ordenado por
+     * slot (que agora e so "ordem de exibicao", ver KitsMenu#slotsFor). */
+    public List<Kit> getUngroupedKitsInCategory(String category) {
+        return getKitsInCategory(category).stream().filter(k -> k.getGroup() == null)
+                .sorted(java.util.Comparator.comparingInt(Kit::getSlot)).toList();
+    }
+
+    /** Grupos distintos presentes na categoria, ordenados pelo slot configurado em
+     * "grupos:" - um icone por grupo abre {@link #getKitsInGroup}. */
+    public List<KitGroup> getGroupsInCategory(String category) {
+        java.util.LinkedHashSet<String> ids = new java.util.LinkedHashSet<>();
+        for (Kit kit : getKitsInCategory(category)) {
+            if (kit.getGroup() != null) {
+                ids.add(kit.getGroup());
+            }
+        }
+        List<KitGroup> result = new ArrayList<>();
+        for (String id : ids) {
+            KitGroup group = groups.get(id);
+            if (group != null) {
+                result.add(group);
+            } else {
+                plugin.getLogger().warning("Kit(s) da categoria '" + category + "' referenciam o grupo '" + id
+                        + "' mas ele nao esta declarado em 'grupos:' - icone omitido.");
+            }
+        }
+        result.sort(java.util.Comparator.comparingInt(KitGroup::slot));
+        return result;
+    }
+
+    public List<Kit> getKitsInGroup(String category, String group) {
+        return getKitsInCategory(category).stream().filter(k -> group.equals(k.getGroup()))
+                .sorted(java.util.Comparator.comparingInt(Kit::getSlot)).toList();
     }
 }

@@ -24,3 +24,48 @@ permissions:
   alkakits.admin:
     description: Acesso administrativo completo ao AlkaKits.
     default: op
+  alkakits.booster:
+    description: Libera os kits exclusivos de Booster do Discord.
+    default: op
+  alkakits.rank.campones:
+    description: Libera os kits do rank Campones.
+    default: op
+  alkakits.rank.duque:
+    description: Libera os kits do rank Duque.
+    default: op
+  alkakits.rank.barao:
+    description: Libera os kits do rank Barao.
+    default: op
+  alkakits.rank.comandante:
+    description: Libera os kits do rank Comandante.
+    default: op
+  alkakits.rank.conquistador:
+    description: Libera os kits do rank Conquistador.
+    default: op
+  alkakits.rank.soberano:
+    description: Libera os kits do rank Soberano.
+    default: op
+  alkakits.rank.tita:
+    description: Libera os kits do rank Tita.
+    default: op
+  alkakits.rank.rei:
+    description: Libera os kits do rank Rei.
+    default: op
+  alkakits.rank.imperador:
+    description: Libera os kits do rank Imperador.
+    default: op
+  alkakits.rank.monarca:
+    description: Libera os kits do rank Monarca.
+    default: op
+  alkakits.founder:
+    description: Libera o Kit Founder, exclusivo dos fundadores do servidor.
+    default: op
+  alkakits.staff:
+    description: Libera o Kit Staff, exclusivo da equipe do servidor.
+    default: op
+  alkakits.vote:
+    description: Libera o Kit Voto, recompensa por votar no servidor.
+    default: op
+  alkakits.influencer:
+    description: Libera o Kit Influencer, exclusivo de criadores de conteudo parceiros.
+    default: op

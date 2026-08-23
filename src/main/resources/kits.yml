@@ -1,7 +1,5 @@
 # Kits do AlkaKits - crie quantos quiser, niveis 1-indexados sem buracos por kit.
-# "requisitos" no kit inteiro se somam aos do nivel individual. Categoria "booster"
-# e so um kit gateado por permissao normal (alkakits.booster) - o grupo do LuckPerms
-# ja e sincronizado pelo yDiscordHook, o AlkaKits nao fala com Discord.
+# "requisitos" no kit inteiro se somam aos do nivel individual.
 #
 # Kits vip/vip+/mvp/mvp+/alka/drakkar migrados do AlkaVips em 2026-08-13 (o
 # KitManager/VipKit/KitsMenu proprios do AlkaVips foram removidos - ver memoria
@@ -16,11 +14,22 @@
 # AlkaVips sem o AlkaKits instalado, o bonus de ativacao ainda precisa funcionar,
 # ja que e parte do fluxo de compra do VIP em si. Ver ActivationService#
 # deliverActivationBonus e vips.yml -> activation-bonus por tier no AlkaVips.
+#
+# Consolidacao 2026-08-23: as 8 categorias antigas (free, vip, vip+, mvp, mvp+,
+# alka, drakkar, booster) viraram so 3 no menu raiz: free/vip/exclusivos. Kits
+# recorrentes de VIP (vip..drakkar) foram todos reapontados pra categoria "vip"
+# unica (slots redistribuidos pra nao colidir na mesma tela). A categoria
+# "booster" antiga (kit generico) foi substituida por kits reais dentro de
+# "exclusivos" (booster_xp, booster_coins, founder, staff, voto, influencer).
+# Import de ~40 kits novos (24 kits de rank gratis + 4 kits de boas-vindas de VIP
+# + 4 kits exclusivos) veio de um material de referencia de outro plugin
+# (drakkarkits) - so a estrutura/itens foram aproveitados, convertidos pro schema
+# proprio do AlkaKits (campos em portugues, MiniMessage em vez de '&' legado).
 
 categorias:
   free:
     nome: "<green>Kits Gratis"
-    slot: 10
+    slot: 11
     icone:
       material: GRASS_BLOCK
       name: "<green><bold>✦ Kits Gratis ✦</bold>"
@@ -31,7 +40,7 @@ categorias:
         - "<dark_gray><st>――――――――――――――――――</st>"
   vip:
     nome: "<#55FF55>Kits VIP"
-    slot: 11
+    slot: 13
     icone:
       material: EMERALD
       name: "<gradient:#55FF55:#00FF00><bold>✦ Kits VIP ✦</bold></gradient>"
@@ -40,141 +49,2807 @@ categorias:
         - "<gray>Kits recorrentes exclusivos"
         - "<gray>pra membros <#55FF55>VIP<gray>."
         - "<dark_gray><st>――――――――――――――――――</st>"
-  'vip+':
-    nome: "<#55FF55>Kits VIP+"
-    slot: 12
-    icone:
-      material: EMERALD_BLOCK
-      name: "<gradient:#55FF55:#00FF00><bold>✦ Kits VIP+ ✦</bold></gradient>"
-      lore:
-        - "<dark_gray><st>――――――――――――――――――</st>"
-        - "<gray>Kits recorrentes exclusivos"
-        - "<gray>pra membros <#55FF55>VIP+<gray>."
-        - "<dark_gray><st>――――――――――――――――――</st>"
-  mvp:
-    nome: "<#55AAFF>Kits MVP"
-    slot: 13
-    icone:
-      material: DIAMOND
-      name: "<gradient:#55AAFF:#0055FF><bold>✦ Kits MVP ✦</bold></gradient>"
-      lore:
-        - "<dark_gray><st>――――――――――――――――――</st>"
-        - "<gray>Kits recorrentes exclusivos"
-        - "<gray>pra membros <#55AAFF>MVP<gray>."
-        - "<dark_gray><st>――――――――――――――――――</st>"
-  'mvp+':
-    nome: "<#55AAFF>Kits MVP+"
-    slot: 14
-    icone:
-      material: DIAMOND_BLOCK
-      name: "<gradient:#FF55FF:#AA00AA><bold>✦ Kits MVP+ ✦</bold></gradient>"
-      lore:
-        - "<dark_gray><st>――――――――――――――――――</st>"
-        - "<gray>Kits recorrentes exclusivos"
-        - "<gray>pra membros <#FF55FF>MVP+<gray>."
-        - "<dark_gray><st>――――――――――――――――――</st>"
-  alka:
-    nome: "<#FFD700>Kits ALKA"
+  exclusivos:
+    nome: "<gold>Kits Exclusivos"
     slot: 15
     icone:
-      material: NETHERITE_INGOT
-      name: "<gradient:#FFD700:#FF8C00><bold>✦ Kits ALKA ✦</bold></gradient>"
+      material: NETHER_STAR
+      name: "<gold><bold>✦ Kits Exclusivos ✦</bold></gold>"
       lore:
         - "<dark_gray><st>――――――――――――――――――</st>"
-        - "<gray>Kits recorrentes exclusivos"
-        - "<gray>pra membros <#FFD700>ALKA<gray>."
+        - "<gray>Kits conquistados: booster do"
+        - "<gray>Discord, founder, staff, voto"
+        - "<gray>e criadores de conteudo."
         - "<dark_gray><st>――――――――――――――――――</st>"
-  drakkar:
-    nome: "<#FF0000>Kits DRAKKAR"
-    slot: 16
+
+# Grupos (3o nivel de menu) - consolidacao 2026-08-23. Cada grupo abaixo vira um
+# icone na tela da sua categoria (free ou vip); ao clicar, abre uma tela so com os
+# kits daquele grupo (ver campo "grupo:" em cada kit la embaixo). Kits sem "grupo:"
+# continuam aparecendo direto na tela da categoria (ex: booster_xp em exclusivos).
+grupos:
+  campones:
+    nome: "<gray>Campones"
+    slot: 19
+    icone:
+      material: WOODEN_SWORD
+      name: "<gray><bold>Campones</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kits recorrentes do"
+        - "<gray>rank Campones."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+  duque:
+    nome: "<white>Duque"
+    slot: 21
+    icone:
+      material: STONE_SWORD
+      name: "<white><bold>Duque</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kits recorrentes do"
+        - "<gray>rank Duque."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+  barao:
+    nome: "<gold>Barao"
+    slot: 23
+    icone:
+      material: GOLDEN_SWORD
+      name: "<gold><bold>Barao</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kits recorrentes do"
+        - "<gray>rank Barao."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+  comandante:
+    nome: "<green>Comandante"
+    slot: 25
+    icone:
+      material: DIAMOND_SWORD
+      name: "<green><bold>Comandante</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kits recorrentes do"
+        - "<gray>rank Comandante."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+  conquistador:
+    nome: "<aqua>Conquistador"
+    slot: 28
+    icone:
+      material: DIAMOND_SWORD
+      name: "<aqua><bold>Conquistador</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kits recorrentes do"
+        - "<gray>rank Conquistador."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+  soberano:
+    nome: "<blue>Soberano"
+    slot: 30
+    icone:
+      material: DIAMOND_SWORD
+      name: "<blue><bold>Soberano</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kits recorrentes do"
+        - "<gray>rank Soberano."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+  tita:
+    nome: "<dark_purple>Tita"
+    slot: 32
+    icone:
+      material: DIAMOND_SWORD
+      name: "<dark_purple><bold>Tita</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kits recorrentes do"
+        - "<gray>rank Tita."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+  rei:
+    nome: "<red>Rei"
+    slot: 34
+    icone:
+      material: DIAMOND_SWORD
+      name: "<red><bold>Rei</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kits recorrentes do"
+        - "<gray>rank Rei."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+  imperador:
+    nome: "<light_purple>Imperador"
+    slot: 35
+    icone:
+      material: DIAMOND_SWORD
+      name: "<light_purple><bold>Imperador</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kits recorrentes do"
+        - "<gray>rank Imperador."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+  monarca:
+    nome: "<yellow>Monarca"
+    slot: 36
+    icone:
+      material: DIAMOND_SWORD
+      name: "<yellow><bold>Monarca</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kits recorrentes do"
+        - "<gray>rank Monarca."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+  vip:
+    nome: "<#55FF55>VIP"
+    slot: 20
+    icone:
+      material: EMERALD
+      name: "<#55FF55><bold>VIP</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kits recorrentes pros"
+        - "<gray>membros <#55FF55>VIP<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+  'vip+':
+    nome: "<#55FF55>VIP+"
+    slot: 22
+    icone:
+      material: EMERALD_BLOCK
+      name: "<#55FF55><bold>VIP+</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kits recorrentes pros"
+        - "<gray>membros <#55FF55>VIP+<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+  mvp:
+    nome: "<#55AAFF>MVP"
+    slot: 24
+    icone:
+      material: DIAMOND_BLOCK
+      name: "<#55AAFF><bold>MVP</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kits recorrentes pros"
+        - "<gray>membros <#55AAFF>MVP<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+  'mvp+':
+    nome: "<#FF55FF>MVP+"
+    slot: 29
+    icone:
+      material: NETHERITE_SCRAP
+      name: "<#FF55FF><bold>MVP+</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kits recorrentes pros"
+        - "<gray>membros <#FF55FF>MVP+<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+  alka:
+    nome: "<#FFD700>ALKA"
+    slot: 31
     icone:
       material: NETHERITE_BLOCK
-      name: "<gradient:#FF0000:#8B0000><bold>✦ Kits DRAKKAR ✦</bold></gradient>"
+      name: "<#FFD700><bold>ALKA</bold>"
       lore:
         - "<dark_gray><st>――――――――――――――――――</st>"
-        - "<gray>Kits recorrentes exclusivos"
-        - "<gray>pro tier maximo, <#FF0000>DRAKKAR<gray>."
+        - "<gray>Kits recorrentes pros"
+        - "<gray>membros <#FFD700>ALKA<gray>."
         - "<dark_gray><st>――――――――――――――――――</st>"
-  booster:
-    nome: "<light_purple>Kits Booster"
-    slot: 17
+  drakkar:
+    nome: "<#FF0000>DRAKKAR"
+    slot: 33
     icone:
-      material: DIAMOND
-      name: "<gradient:#C87BFF:#7B2FFF><bold>✦ Kits Booster ✦</bold></gradient>"
+      material: DRAGON_BREATH
+      name: "<#FF0000><bold>DRAKKAR</bold>"
       lore:
         - "<dark_gray><st>――――――――――――――――――</st>"
-        - "<gray>Kits exclusivos pra quem"
-        - "<gray>impulsiona o servidor"
-        - "<gray>no Discord."
+        - "<gray>Kits recorrentes pro"
+        - "<gray>tier maximo, <#FF0000>DRAKKAR<gray>."
         - "<dark_gray><st>――――――――――――――――――</st>"
 
 kits:
-  iniciante:
+  # ---------------------------------------------------------- kits de rank gratis
+  # Importados 2026-08-23 do material de referencia (drakkarkits/free.yml, 8 ranks
+  # x 3 periodos). Gate por permissao alkakits.rank.<rank> (node proprio do
+  # AlkaKits, NAO o node original do arquivo de referencia) - default:op no
+  # plugin.yml, LuckPerms concede pro grupo de cada rank do AlkaRankUp.
+
+  campones_diario:
     categoria: free
-    slot: 10
+    grupo: campones
+    slot: 20
     icone:
-      material: LEATHER_CHESTPLATE
-      name: "<white><bold>Kit Iniciante</bold>"
+      material: WOODEN_SWORD
+      name: "<gray><bold>Kit Campones Diario</bold>"
       lore:
         - "<dark_gray><st>――――――――――――――――――</st>"
-        - "<gray>Kit basico pra comecar"
-        - "<gray>a sua jornada."
+        - "<gray>Recompensa diaria do"
+        - "<gray>rank Campones."
         - "<dark_gray><st>――――――――――――――――――</st>"
     requisitos: []
     niveis:
       1:
-        requisitos: []
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.campones"
         moeda: null
         custo: 0
         buy-delay-segundos: 0
         cooldown-tipo: DAILY
         usos-maximos: -1
         itens:
-          - material: BREAD
-            amount: 8
-          - material: WOODEN_SWORD
-          - material: WOODEN_PICKAXE
-          - material: WOODEN_AXE
+          - material: IRON_SWORD
+            name: "<gray>Espada do Campones"
+            enchantments:
+              sharpness: 1
+              unbreaking: 1
+          - material: IRON_AXE
+            name: "<gray>Machado do Campones"
+            enchantments:
+              efficiency: 1
+              unbreaking: 1
+          - material: IRON_PICKAXE
+            name: "<gray>Picareta do Campones"
+            enchantments:
+              efficiency: 1
+              unbreaking: 1
+          - material: IRON_SHOVEL
+            name: "<gray>Pa do Campones"
+            enchantments:
+              efficiency: 1
+              unbreaking: 1
+          - material: BOW
+            name: "<gray>Arco do Campones"
+            enchantments:
+              power: 1
+              unbreaking: 1
+          - material: IRON_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 1
+              unbreaking: 1
         armadura:
+          capacete:
+            material: IRON_HELMET
+            name: "<gray>Capacete do Campones"
+            enchantments:
+              protection: 1
+              unbreaking: 1
           peitoral:
-            material: LEATHER_CHESTPLATE
+            material: IRON_CHESTPLATE
+            name: "<gray>Peitoral do Campones"
+            enchantments:
+              protection: 1
+              unbreaking: 1
+          calca:
+            material: IRON_LEGGINGS
+            name: "<gray>Calcas do Campones"
+            enchantments:
+              protection: 1
+              unbreaking: 1
+          bota:
+            material: IRON_BOOTS
+            name: "<gray>Botas do Campones"
+            enchantments:
+              protection: 1
+              unbreaking: 1
         comandos: []
 
-  booster:
-    categoria: booster
-    slot: 13
+  campones_semanal:
+    categoria: free
+    grupo: campones
+    slot: 22
     icone:
-      material: NETHER_STAR
-      name: "<gradient:#C87BFF:#7B2FFF><bold>Kit Booster</bold></gradient>"
+      material: WOODEN_SWORD
+      name: "<gray><bold>Kit Campones Semanal</bold>"
       lore:
         - "<dark_gray><st>――――――――――――――――――</st>"
-        - "<light_purple>Obrigado por impulsionar"
-        - "<light_purple>o servidor!"
+        - "<gray>Recompensa semanal do"
+        - "<gray>rank Campones."
         - "<dark_gray><st>――――――――――――――――――</st>"
-    requisitos:
-      - tipo: PERMISSION
-        valor: "alkakits.booster"
+    requisitos: []
     niveis:
       1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.campones"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: WEEKLY
+        usos-maximos: -1
+        itens:
+          - material: IRON_SWORD
+            name: "<gray>Espada do Campones"
+            enchantments:
+              sharpness: 2
+              unbreaking: 2
+          - material: IRON_AXE
+            name: "<gray>Machado do Campones"
+            enchantments:
+              efficiency: 2
+              unbreaking: 2
+          - material: IRON_PICKAXE
+            name: "<gray>Picareta do Campones"
+            enchantments:
+              efficiency: 2
+              unbreaking: 2
+          - material: IRON_SHOVEL
+            name: "<gray>Pa do Campones"
+            enchantments:
+              efficiency: 2
+              unbreaking: 2
+          - material: BOW
+            name: "<gray>Arco do Campones"
+            enchantments:
+              power: 2
+              unbreaking: 2
+          - material: IRON_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 2
+              unbreaking: 2
+        armadura:
+          capacete:
+            material: IRON_HELMET
+            name: "<gray>Capacete do Campones"
+            enchantments:
+              protection: 2
+              unbreaking: 2
+          peitoral:
+            material: IRON_CHESTPLATE
+            name: "<gray>Peitoral do Campones"
+            enchantments:
+              protection: 2
+              unbreaking: 2
+          calca:
+            material: IRON_LEGGINGS
+            name: "<gray>Calcas do Campones"
+            enchantments:
+              protection: 2
+              unbreaking: 2
+          bota:
+            material: IRON_BOOTS
+            name: "<gray>Botas do Campones"
+            enchantments:
+              protection: 2
+              unbreaking: 2
+        comandos: []
+
+  campones_mensal:
+    categoria: free
+    grupo: campones
+    slot: 24
+    icone:
+      material: WOODEN_SWORD
+      name: "<gray><bold>Kit Campones Mensal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa mensal do"
+        - "<gray>rank Campones."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.campones"
         moeda: null
         custo: 0
         buy-delay-segundos: 0
         cooldown-tipo: MONTHLY
         usos-maximos: -1
         itens:
-          - material: DIAMOND
-            amount: 16
-          - material: NETHERITE_SCRAP
-            amount: 2
+          - material: IRON_SWORD
+            name: "<gray>Espada do Campones"
+            enchantments:
+              sharpness: 3
+              unbreaking: 3
+              fire_aspect: 1
+          - material: IRON_AXE
+            name: "<gray>Machado do Campones"
+            enchantments:
+              efficiency: 3
+              fortune: 3
+              unbreaking: 3
+          - material: IRON_PICKAXE
+            name: "<gray>Picareta do Campones"
+            enchantments:
+              efficiency: 3
+              fortune: 3
+              unbreaking: 3
+          - material: IRON_SHOVEL
+            name: "<gray>Pa do Campones"
+            enchantments:
+              efficiency: 3
+              fortune: 3
+              unbreaking: 3
+          - material: BOW
+            name: "<gray>Arco do Campones"
+            enchantments:
+              power: 3
+              flame: 1
+              unbreaking: 3
+          - material: IRON_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 3
+              unbreaking: 3
+              fire_aspect: 1
+        armadura:
+          capacete:
+            material: IRON_HELMET
+            name: "<gray>Capacete do Campones"
+            enchantments:
+              protection: 3
+              unbreaking: 3
+          peitoral:
+            material: IRON_CHESTPLATE
+            name: "<gray>Peitoral do Campones"
+            enchantments:
+              protection: 3
+              unbreaking: 3
+          calca:
+            material: IRON_LEGGINGS
+            name: "<gray>Calcas do Campones"
+            enchantments:
+              protection: 3
+              unbreaking: 3
+          bota:
+            material: IRON_BOOTS
+            name: "<gray>Botas do Campones"
+            enchantments:
+              protection: 3
+              unbreaking: 3
+        comandos: []
+
+  duque_diario:
+    categoria: free
+    grupo: duque
+    slot: 20
+    icone:
+      material: STONE_SWORD
+      name: "<white><bold>Kit Duque Diario</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa diaria do"
+        - "<gray>rank Duque."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.duque"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: DAILY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<white>Espada do Duque"
+            enchantments:
+              sharpness: 2
+              unbreaking: 2
+          - material: DIAMOND_AXE
+            name: "<white>Machado do Duque"
+            enchantments:
+              efficiency: 2
+              unbreaking: 2
+          - material: DIAMOND_PICKAXE
+            name: "<white>Picareta do Duque"
+            enchantments:
+              efficiency: 2
+              unbreaking: 2
+          - material: DIAMOND_SHOVEL
+            name: "<white>Pa do Duque"
+            enchantments:
+              efficiency: 2
+              unbreaking: 2
+          - material: BOW
+            name: "<white>Arco do Duque"
+            enchantments:
+              power: 2
+              unbreaking: 2
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 2
+              unbreaking: 2
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<white>Capacete do Duque"
+            enchantments:
+              protection: 2
+              unbreaking: 2
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<white>Peitoral do Duque"
+            enchantments:
+              protection: 2
+              unbreaking: 2
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<white>Calcas do Duque"
+            enchantments:
+              protection: 2
+              unbreaking: 2
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<white>Botas do Duque"
+            enchantments:
+              protection: 2
+              unbreaking: 2
+        comandos: []
+
+  duque_semanal:
+    categoria: free
+    grupo: duque
+    slot: 22
+    icone:
+      material: STONE_SWORD
+      name: "<white><bold>Kit Duque Semanal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa semanal do"
+        - "<gray>rank Duque."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.duque"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: WEEKLY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<white>Espada do Duque"
+            enchantments:
+              sharpness: 3
+              unbreaking: 3
+          - material: DIAMOND_AXE
+            name: "<white>Machado do Duque"
+            enchantments:
+              efficiency: 3
+              unbreaking: 3
+          - material: DIAMOND_PICKAXE
+            name: "<white>Picareta do Duque"
+            enchantments:
+              efficiency: 3
+              unbreaking: 3
+          - material: DIAMOND_SHOVEL
+            name: "<white>Pa do Duque"
+            enchantments:
+              efficiency: 3
+              unbreaking: 3
+          - material: BOW
+            name: "<white>Arco do Duque"
+            enchantments:
+              power: 3
+              unbreaking: 3
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 3
+              unbreaking: 3
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<white>Capacete do Duque"
+            enchantments:
+              protection: 3
+              unbreaking: 3
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<white>Peitoral do Duque"
+            enchantments:
+              protection: 3
+              unbreaking: 3
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<white>Calcas do Duque"
+            enchantments:
+              protection: 3
+              unbreaking: 3
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<white>Botas do Duque"
+            enchantments:
+              protection: 3
+              unbreaking: 3
+        comandos: []
+
+  duque_mensal:
+    categoria: free
+    grupo: duque
+    slot: 24
+    icone:
+      material: STONE_SWORD
+      name: "<white><bold>Kit Duque Mensal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa mensal do"
+        - "<gray>rank Duque."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.duque"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: MONTHLY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<white>Espada do Duque"
+            enchantments:
+              sharpness: 4
+              unbreaking: 4
+              fire_aspect: 1
+          - material: DIAMOND_AXE
+            name: "<white>Machado do Duque"
+            enchantments:
+              efficiency: 4
+              fortune: 4
+              unbreaking: 4
+          - material: DIAMOND_PICKAXE
+            name: "<white>Picareta do Duque"
+            enchantments:
+              efficiency: 4
+              fortune: 4
+              unbreaking: 4
+          - material: DIAMOND_SHOVEL
+            name: "<white>Pa do Duque"
+            enchantments:
+              efficiency: 4
+              fortune: 4
+              unbreaking: 4
+          - material: BOW
+            name: "<white>Arco do Duque"
+            enchantments:
+              power: 4
+              flame: 1
+              unbreaking: 4
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 4
+              unbreaking: 4
+              fire_aspect: 1
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<white>Capacete do Duque"
+            enchantments:
+              protection: 4
+              unbreaking: 4
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<white>Peitoral do Duque"
+            enchantments:
+              protection: 4
+              unbreaking: 4
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<white>Calcas do Duque"
+            enchantments:
+              protection: 4
+              unbreaking: 4
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<white>Botas do Duque"
+            enchantments:
+              protection: 4
+              unbreaking: 4
+        comandos: []
+
+  barao_diario:
+    categoria: free
+    grupo: barao
+    slot: 20
+    icone:
+      material: GOLDEN_SWORD
+      name: "<gold><bold>Kit Barao Diario</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa diaria do"
+        - "<gray>rank Barao."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.barao"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: DAILY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<gold>Espada do Barao"
+            enchantments:
+              sharpness: 3
+              fire_aspect: 1
+              unbreaking: 3
+          - material: DIAMOND_AXE
+            name: "<gold>Machado do Barao"
+            enchantments:
+              efficiency: 3
+              fortune: 3
+              unbreaking: 3
+          - material: DIAMOND_PICKAXE
+            name: "<gold>Picareta do Barao"
+            enchantments:
+              efficiency: 3
+              fortune: 3
+              unbreaking: 3
+          - material: DIAMOND_SHOVEL
+            name: "<gold>Pa do Barao"
+            enchantments:
+              efficiency: 3
+              fortune: 3
+              unbreaking: 3
+          - material: BOW
+            name: "<gold>Arco do Barao"
+            enchantments:
+              power: 3
+              unbreaking: 3
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 3
+              fire_aspect: 1
+              unbreaking: 3
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<gold>Capacete do Barao"
+            enchantments:
+              protection: 3
+              unbreaking: 3
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<gold>Peitoral do Barao"
+            enchantments:
+              protection: 3
+              unbreaking: 3
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<gold>Calcas do Barao"
+            enchantments:
+              protection: 3
+              unbreaking: 3
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<gold>Botas do Barao"
+            enchantments:
+              protection: 3
+              unbreaking: 3
+        comandos: []
+
+  barao_semanal:
+    categoria: free
+    grupo: barao
+    slot: 22
+    icone:
+      material: GOLDEN_SWORD
+      name: "<gold><bold>Kit Barao Semanal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa semanal do"
+        - "<gray>rank Barao."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.barao"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: WEEKLY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<gold>Espada do Barao"
+            enchantments:
+              sharpness: 4
+              fire_aspect: 1
+              unbreaking: 4
+          - material: DIAMOND_AXE
+            name: "<gold>Machado do Barao"
+            enchantments:
+              efficiency: 4
+              fortune: 4
+              unbreaking: 4
+          - material: DIAMOND_PICKAXE
+            name: "<gold>Picareta do Barao"
+            enchantments:
+              efficiency: 4
+              fortune: 4
+              unbreaking: 4
+          - material: DIAMOND_SHOVEL
+            name: "<gold>Pa do Barao"
+            enchantments:
+              efficiency: 4
+              fortune: 4
+              unbreaking: 4
+          - material: BOW
+            name: "<gold>Arco do Barao"
+            enchantments:
+              power: 4
+              unbreaking: 4
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 4
+              fire_aspect: 1
+              unbreaking: 4
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<gold>Capacete do Barao"
+            enchantments:
+              protection: 4
+              unbreaking: 4
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<gold>Peitoral do Barao"
+            enchantments:
+              protection: 4
+              unbreaking: 4
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<gold>Calcas do Barao"
+            enchantments:
+              protection: 4
+              unbreaking: 4
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<gold>Botas do Barao"
+            enchantments:
+              protection: 4
+              unbreaking: 4
+        comandos: []
+
+  barao_mensal:
+    categoria: free
+    grupo: barao
+    slot: 24
+    icone:
+      material: GOLDEN_SWORD
+      name: "<gold><bold>Kit Barao Mensal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa mensal do"
+        - "<gray>rank Barao."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.barao"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: MONTHLY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<gold>Espada do Barao"
+            enchantments:
+              sharpness: 5
+              unbreaking: 5
+              fire_aspect: 2
+          - material: DIAMOND_AXE
+            name: "<gold>Machado do Barao"
+            enchantments:
+              efficiency: 5
+              fortune: 5
+              unbreaking: 5
+          - material: DIAMOND_PICKAXE
+            name: "<gold>Picareta do Barao"
+            enchantments:
+              efficiency: 5
+              fortune: 5
+              unbreaking: 5
+          - material: DIAMOND_SHOVEL
+            name: "<gold>Pa do Barao"
+            enchantments:
+              efficiency: 5
+              fortune: 5
+              unbreaking: 5
+          - material: BOW
+            name: "<gold>Arco do Barao"
+            enchantments:
+              power: 5
+              flame: 1
+              unbreaking: 5
+              infinity: 1
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 5
+              unbreaking: 5
+              fire_aspect: 2
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<gold>Capacete do Barao"
+            enchantments:
+              protection: 5
+              unbreaking: 5
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<gold>Peitoral do Barao"
+            enchantments:
+              protection: 5
+              unbreaking: 5
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<gold>Calcas do Barao"
+            enchantments:
+              protection: 5
+              unbreaking: 5
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<gold>Botas do Barao"
+            enchantments:
+              protection: 5
+              unbreaking: 5
+        comandos: []
+
+  comandante_diario:
+    categoria: free
+    grupo: comandante
+    slot: 20
+    icone:
+      material: DIAMOND_SWORD
+      name: "<green><bold>Kit Comandante Diario</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa diaria do"
+        - "<gray>rank Comandante."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.comandante"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: DAILY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<green>Espada do Comandante"
+            enchantments:
+              sharpness: 4
+              fire_aspect: 1
+              unbreaking: 4
+          - material: DIAMOND_AXE
+            name: "<green>Machado do Comandante"
+            enchantments:
+              efficiency: 4
+              fortune: 4
+              unbreaking: 4
+          - material: DIAMOND_PICKAXE
+            name: "<green>Picareta do Comandante"
+            enchantments:
+              efficiency: 4
+              fortune: 4
+              unbreaking: 4
+          - material: DIAMOND_SHOVEL
+            name: "<green>Pa do Comandante"
+            enchantments:
+              efficiency: 4
+              fortune: 4
+              unbreaking: 4
+          - material: BOW
+            name: "<green>Arco do Comandante"
+            enchantments:
+              power: 4
+              unbreaking: 4
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 4
+              fire_aspect: 1
+              unbreaking: 4
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<green>Capacete do Comandante"
+            enchantments:
+              protection: 4
+              unbreaking: 4
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<green>Peitoral do Comandante"
+            enchantments:
+              protection: 4
+              unbreaking: 4
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<green>Calcas do Comandante"
+            enchantments:
+              protection: 4
+              unbreaking: 4
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<green>Botas do Comandante"
+            enchantments:
+              protection: 4
+              unbreaking: 4
+        comandos: []
+
+  comandante_semanal:
+    categoria: free
+    grupo: comandante
+    slot: 22
+    icone:
+      material: DIAMOND_SWORD
+      name: "<green><bold>Kit Comandante Semanal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa semanal do"
+        - "<gray>rank Comandante."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.comandante"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: WEEKLY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<green>Espada do Comandante"
+            enchantments:
+              sharpness: 5
+              fire_aspect: 1
+              unbreaking: 5
+          - material: DIAMOND_AXE
+            name: "<green>Machado do Comandante"
+            enchantments:
+              efficiency: 5
+              fortune: 5
+              unbreaking: 5
+          - material: DIAMOND_PICKAXE
+            name: "<green>Picareta do Comandante"
+            enchantments:
+              efficiency: 5
+              fortune: 5
+              unbreaking: 5
+          - material: DIAMOND_SHOVEL
+            name: "<green>Pa do Comandante"
+            enchantments:
+              efficiency: 5
+              fortune: 5
+              unbreaking: 5
+          - material: BOW
+            name: "<green>Arco do Comandante"
+            enchantments:
+              power: 5
+              unbreaking: 5
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 5
+              fire_aspect: 1
+              unbreaking: 5
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<green>Capacete do Comandante"
+            enchantments:
+              protection: 5
+              unbreaking: 5
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<green>Peitoral do Comandante"
+            enchantments:
+              protection: 5
+              unbreaking: 5
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<green>Calcas do Comandante"
+            enchantments:
+              protection: 5
+              unbreaking: 5
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<green>Botas do Comandante"
+            enchantments:
+              protection: 5
+              unbreaking: 5
+        comandos: []
+
+  comandante_mensal:
+    categoria: free
+    grupo: comandante
+    slot: 24
+    icone:
+      material: DIAMOND_SWORD
+      name: "<green><bold>Kit Comandante Mensal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa mensal do"
+        - "<gray>rank Comandante."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.comandante"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: MONTHLY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<green>Espada do Comandante"
+            enchantments:
+              sharpness: 6
+              unbreaking: 6
+              fire_aspect: 2
+          - material: DIAMOND_AXE
+            name: "<green>Machado do Comandante"
+            enchantments:
+              efficiency: 6
+              fortune: 6
+              unbreaking: 6
+          - material: DIAMOND_PICKAXE
+            name: "<green>Picareta do Comandante"
+            enchantments:
+              efficiency: 6
+              fortune: 6
+              unbreaking: 6
+          - material: DIAMOND_SHOVEL
+            name: "<green>Pa do Comandante"
+            enchantments:
+              efficiency: 6
+              fortune: 6
+              unbreaking: 6
+          - material: BOW
+            name: "<green>Arco do Comandante"
+            enchantments:
+              power: 6
+              flame: 1
+              unbreaking: 6
+              infinity: 1
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 6
+              unbreaking: 6
+              fire_aspect: 2
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<green>Capacete do Comandante"
+            enchantments:
+              protection: 6
+              unbreaking: 6
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<green>Peitoral do Comandante"
+            enchantments:
+              protection: 6
+              unbreaking: 6
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<green>Calcas do Comandante"
+            enchantments:
+              protection: 6
+              unbreaking: 6
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<green>Botas do Comandante"
+            enchantments:
+              protection: 6
+              unbreaking: 6
+        comandos: []
+
+  conquistador_diario:
+    categoria: free
+    grupo: conquistador
+    slot: 20
+    icone:
+      material: DIAMOND_SWORD
+      name: "<aqua><bold>Kit Conquistador Diario</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa diaria do"
+        - "<gray>rank Conquistador."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.conquistador"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: DAILY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<aqua>Espada do Conquistador"
+            enchantments:
+              sharpness: 5
+              fortune: 5
+              unbreaking: 5
+          - material: DIAMOND_AXE
+            name: "<aqua>Machado do Conquistador"
+            enchantments:
+              efficiency: 5
+              fortune: 5
+              unbreaking: 5
+          - material: DIAMOND_PICKAXE
+            name: "<aqua>Picareta do Conquistador"
+            enchantments:
+              efficiency: 5
+              fortune: 5
+              unbreaking: 5
+          - material: DIAMOND_SHOVEL
+            name: "<aqua>Pa do Conquistador"
+            enchantments:
+              efficiency: 5
+              fortune: 5
+              unbreaking: 5
+          - material: BOW
+            name: "<aqua>Arco do Conquistador"
+            enchantments:
+              power: 5
+              unbreaking: 5
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 5
+              fortune: 5
+              unbreaking: 5
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<aqua>Capacete do Conquistador"
+            enchantments:
+              protection: 5
+              unbreaking: 5
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<aqua>Peitoral do Conquistador"
+            enchantments:
+              protection: 5
+              unbreaking: 5
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<aqua>Calcas do Conquistador"
+            enchantments:
+              protection: 5
+              unbreaking: 5
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<aqua>Botas do Conquistador"
+            enchantments:
+              protection: 5
+              unbreaking: 5
+        comandos: []
+
+  conquistador_semanal:
+    categoria: free
+    grupo: conquistador
+    slot: 22
+    icone:
+      material: DIAMOND_SWORD
+      name: "<aqua><bold>Kit Conquistador Semanal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa semanal do"
+        - "<gray>rank Conquistador."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.conquistador"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: WEEKLY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<aqua>Espada do Conquistador"
+            enchantments:
+              sharpness: 6
+              fire_aspect: 1
+              unbreaking: 6
+          - material: DIAMOND_AXE
+            name: "<aqua>Machado do Conquistador"
+            enchantments:
+              efficiency: 6
+              fortune: 6
+              unbreaking: 6
+          - material: DIAMOND_PICKAXE
+            name: "<aqua>Picareta do Conquistador"
+            enchantments:
+              efficiency: 6
+              fortune: 6
+              unbreaking: 6
+          - material: DIAMOND_SHOVEL
+            name: "<aqua>Pa do Conquistador"
+            enchantments:
+              efficiency: 6
+              fortune: 6
+              unbreaking: 6
+          - material: BOW
+            name: "<aqua>Arco do Conquistador"
+            enchantments:
+              power: 6
+              unbreaking: 6
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 6
+              fire_aspect: 1
+              unbreaking: 6
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<aqua>Capacete do Conquistador"
+            enchantments:
+              protection: 6
+              unbreaking: 6
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<aqua>Peitoral do Conquistador"
+            enchantments:
+              protection: 6
+              unbreaking: 6
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<aqua>Calcas do Conquistador"
+            enchantments:
+              protection: 6
+              unbreaking: 6
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<aqua>Botas do Conquistador"
+            enchantments:
+              protection: 6
+              unbreaking: 6
+        comandos: []
+
+  conquistador_mensal:
+    categoria: free
+    grupo: conquistador
+    slot: 24
+    icone:
+      material: DIAMOND_SWORD
+      name: "<aqua><bold>Kit Conquistador Mensal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa mensal do"
+        - "<gray>rank Conquistador."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.conquistador"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: MONTHLY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<aqua>Espada do Conquistador"
+            enchantments:
+              sharpness: 7
+              unbreaking: 7
+              fire_aspect: 2
+          - material: DIAMOND_AXE
+            name: "<aqua>Machado do Conquistador"
+            enchantments:
+              efficiency: 7
+              fortune: 7
+              unbreaking: 7
+          - material: DIAMOND_PICKAXE
+            name: "<aqua>Picareta do Conquistador"
+            enchantments:
+              efficiency: 7
+              fortune: 7
+              unbreaking: 7
+          - material: DIAMOND_SHOVEL
+            name: "<aqua>Pa do Conquistador"
+            enchantments:
+              efficiency: 7
+              fortune: 7
+              unbreaking: 7
+          - material: BOW
+            name: "<aqua>Arco do Conquistador"
+            enchantments:
+              power: 7
+              flame: 1
+              unbreaking: 7
+              infinity: 1
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 7
+              unbreaking: 7
+              fire_aspect: 2
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<aqua>Capacete do Conquistador"
+            enchantments:
+              protection: 7
+              unbreaking: 7
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<aqua>Peitoral do Conquistador"
+            enchantments:
+              protection: 7
+              unbreaking: 7
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<aqua>Calcas do Conquistador"
+            enchantments:
+              protection: 7
+              unbreaking: 7
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<aqua>Botas do Conquistador"
+            enchantments:
+              protection: 7
+              unbreaking: 7
+        comandos: []
+
+  soberano_diario:
+    categoria: free
+    grupo: soberano
+    slot: 20
+    icone:
+      material: DIAMOND_SWORD
+      name: "<blue><bold>Kit Soberano Diario</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa diaria do"
+        - "<gray>rank Soberano."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.soberano"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: DAILY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<blue>Espada do Soberano"
+            enchantments:
+              sharpness: 6
+              fire_aspect: 1
+              unbreaking: 6
+          - material: DIAMOND_AXE
+            name: "<blue>Machado do Soberano"
+            enchantments:
+              efficiency: 6
+              fortune: 6
+              unbreaking: 6
+          - material: DIAMOND_PICKAXE
+            name: "<blue>Picareta do Soberano"
+            enchantments:
+              efficiency: 6
+              fortune: 6
+              unbreaking: 6
+          - material: DIAMOND_SHOVEL
+            name: "<blue>Pa do Soberano"
+            enchantments:
+              efficiency: 6
+              fortune: 6
+              unbreaking: 6
+          - material: BOW
+            name: "<blue>Arco do Soberano"
+            enchantments:
+              power: 6
+              unbreaking: 6
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 6
+              fire_aspect: 1
+              unbreaking: 6
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<blue>Capacete do Soberano"
+            enchantments:
+              protection: 6
+              unbreaking: 6
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<blue>Peitoral do Soberano"
+            enchantments:
+              protection: 6
+              unbreaking: 6
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<blue>Calcas do Soberano"
+            enchantments:
+              protection: 6
+              unbreaking: 6
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<blue>Botas do Soberano"
+            enchantments:
+              protection: 6
+              unbreaking: 6
+        comandos: []
+
+  soberano_semanal:
+    categoria: free
+    grupo: soberano
+    slot: 22
+    icone:
+      material: DIAMOND_SWORD
+      name: "<blue><bold>Kit Soberano Semanal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa semanal do"
+        - "<gray>rank Soberano."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.soberano"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: WEEKLY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<blue>Espada do Soberano"
+            enchantments:
+              sharpness: 7
+              fire_aspect: 1
+              unbreaking: 7
+          - material: DIAMOND_AXE
+            name: "<blue>Machado do Soberano"
+            enchantments:
+              efficiency: 7
+              fortune: 7
+              unbreaking: 7
+          - material: DIAMOND_PICKAXE
+            name: "<blue>Picareta do Soberano"
+            enchantments:
+              efficiency: 7
+              fortune: 7
+              unbreaking: 7
+          - material: DIAMOND_SHOVEL
+            name: "<blue>Pa do Soberano"
+            enchantments:
+              efficiency: 7
+              fortune: 7
+              unbreaking: 7
+          - material: BOW
+            name: "<blue>Arco do Soberano"
+            enchantments:
+              power: 7
+              unbreaking: 7
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 7
+              fire_aspect: 1
+              unbreaking: 7
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<blue>Capacete do Soberano"
+            enchantments:
+              protection: 7
+              unbreaking: 7
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<blue>Peitoral do Soberano"
+            enchantments:
+              protection: 7
+              unbreaking: 7
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<blue>Calcas do Soberano"
+            enchantments:
+              protection: 7
+              unbreaking: 7
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<blue>Botas do Soberano"
+            enchantments:
+              protection: 7
+              unbreaking: 7
+        comandos: []
+
+  soberano_mensal:
+    categoria: free
+    grupo: soberano
+    slot: 24
+    icone:
+      material: DIAMOND_SWORD
+      name: "<blue><bold>Kit Soberano Mensal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa mensal do"
+        - "<gray>rank Soberano."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.soberano"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: MONTHLY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<blue>Espada do Soberano"
+            enchantments:
+              sharpness: 8
+              unbreaking: 8
+              fire_aspect: 2
+          - material: DIAMOND_AXE
+            name: "<blue>Machado do Soberano"
+            enchantments:
+              efficiency: 8
+              fortune: 8
+              unbreaking: 8
+          - material: DIAMOND_PICKAXE
+            name: "<blue>Picareta do Soberano"
+            enchantments:
+              efficiency: 8
+              fortune: 8
+              unbreaking: 8
+          - material: DIAMOND_SHOVEL
+            name: "<blue>Pa do Soberano"
+            enchantments:
+              efficiency: 8
+              fortune: 8
+              unbreaking: 8
+          - material: BOW
+            name: "<blue>Arco do Soberano"
+            enchantments:
+              power: 8
+              flame: 2
+              unbreaking: 8
+              infinity: 1
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 8
+              unbreaking: 8
+              fire_aspect: 2
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<blue>Capacete do Soberano"
+            enchantments:
+              protection: 8
+              unbreaking: 8
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<blue>Peitoral do Soberano"
+            enchantments:
+              protection: 8
+              unbreaking: 8
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<blue>Calcas do Soberano"
+            enchantments:
+              protection: 8
+              unbreaking: 8
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<blue>Botas do Soberano"
+            enchantments:
+              protection: 8
+              unbreaking: 8
+        comandos: []
+
+  tita_diario:
+    categoria: free
+    grupo: tita
+    slot: 20
+    icone:
+      material: DIAMOND_SWORD
+      name: "<dark_purple><bold>Kit Tita Diario</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa diaria do"
+        - "<gray>rank Tita."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.tita"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: DAILY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<dark_purple>Espada do Tita"
+            enchantments:
+              sharpness: 7
+              fire_aspect: 1
+              unbreaking: 7
+          - material: DIAMOND_AXE
+            name: "<dark_purple>Machado do Tita"
+            enchantments:
+              efficiency: 7
+              fortune: 7
+              unbreaking: 7
+          - material: DIAMOND_PICKAXE
+            name: "<dark_purple>Picareta do Tita"
+            enchantments:
+              efficiency: 7
+              fortune: 7
+              unbreaking: 7
+          - material: DIAMOND_SHOVEL
+            name: "<dark_purple>Pa do Tita"
+            enchantments:
+              efficiency: 7
+              fortune: 7
+              unbreaking: 7
+          - material: BOW
+            name: "<dark_purple>Arco do Tita"
+            enchantments:
+              power: 7
+              unbreaking: 7
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 7
+              fire_aspect: 1
+              unbreaking: 7
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<dark_purple>Capacete do Tita"
+            enchantments:
+              protection: 7
+              unbreaking: 7
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<dark_purple>Peitoral do Tita"
+            enchantments:
+              protection: 7
+              unbreaking: 7
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<dark_purple>Calcas do Tita"
+            enchantments:
+              protection: 7
+              unbreaking: 7
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<dark_purple>Botas do Tita"
+            enchantments:
+              protection: 7
+              unbreaking: 7
+        comandos: []
+
+  tita_semanal:
+    categoria: free
+    grupo: tita
+    slot: 22
+    icone:
+      material: DIAMOND_SWORD
+      name: "<dark_purple><bold>Kit Tita Semanal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa semanal do"
+        - "<gray>rank Tita."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.tita"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: WEEKLY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<dark_purple>Espada do Tita"
+            enchantments:
+              sharpness: 8
+              fire_aspect: 1
+              unbreaking: 8
+          - material: DIAMOND_AXE
+            name: "<dark_purple>Machado do Tita"
+            enchantments:
+              efficiency: 8
+              fortune: 8
+              unbreaking: 8
+          - material: DIAMOND_PICKAXE
+            name: "<dark_purple>Picareta do Tita"
+            enchantments:
+              efficiency: 8
+              fortune: 8
+              unbreaking: 8
+          - material: DIAMOND_SHOVEL
+            name: "<dark_purple>Pa do Tita"
+            enchantments:
+              efficiency: 8
+              fortune: 8
+              unbreaking: 8
+          - material: BOW
+            name: "<dark_purple>Arco do Tita"
+            enchantments:
+              power: 8
+              unbreaking: 8
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 8
+              fire_aspect: 1
+              unbreaking: 8
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<dark_purple>Capacete do Tita"
+            enchantments:
+              protection: 8
+              unbreaking: 8
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<dark_purple>Peitoral do Tita"
+            enchantments:
+              protection: 8
+              unbreaking: 8
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<dark_purple>Calcas do Tita"
+            enchantments:
+              protection: 8
+              unbreaking: 8
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<dark_purple>Botas do Tita"
+            enchantments:
+              protection: 8
+              unbreaking: 8
+        comandos: []
+
+  tita_mensal:
+    categoria: free
+    grupo: tita
+    slot: 24
+    icone:
+      material: DIAMOND_SWORD
+      name: "<dark_purple><bold>Kit Tita Mensal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa mensal do"
+        - "<gray>rank Tita."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.tita"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: MONTHLY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<dark_purple>Espada do Tita"
+            enchantments:
+              sharpness: 9
+              unbreaking: 9
+              fire_aspect: 2
+          - material: DIAMOND_AXE
+            name: "<dark_purple>Machado do Tita"
+            enchantments:
+              efficiency: 9
+              fortune: 9
+              unbreaking: 9
+          - material: DIAMOND_PICKAXE
+            name: "<dark_purple>Picareta do Tita"
+            enchantments:
+              efficiency: 9
+              fortune: 9
+              unbreaking: 9
+          - material: DIAMOND_SHOVEL
+            name: "<dark_purple>Pa do Tita"
+            enchantments:
+              efficiency: 9
+              fortune: 9
+              unbreaking: 9
+          - material: BOW
+            name: "<dark_purple>Arco do Tita"
+            enchantments:
+              power: 9
+              flame: 2
+              unbreaking: 9
+              infinity: 1
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 9
+              unbreaking: 9
+              fire_aspect: 2
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<dark_purple>Capacete do Tita"
+            enchantments:
+              protection: 9
+              unbreaking: 9
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<dark_purple>Peitoral do Tita"
+            enchantments:
+              protection: 9
+              unbreaking: 9
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<dark_purple>Calcas do Tita"
+            enchantments:
+              protection: 9
+              unbreaking: 9
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<dark_purple>Botas do Tita"
+            enchantments:
+              protection: 9
+              unbreaking: 9
+        comandos: []
+
+  rei_diario:
+    categoria: free
+    grupo: rei
+    slot: 20
+    icone:
+      material: DIAMOND_SWORD
+      name: "<red><bold>Kit Rei Diario</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa diaria do"
+        - "<gray>rank Rei."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.rei"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: DAILY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<red>Espada do Rei"
+            enchantments:
+              sharpness: 8
+              fire_aspect: 1
+              unbreaking: 8
+          - material: DIAMOND_AXE
+            name: "<red>Machado do Rei"
+            enchantments:
+              efficiency: 8
+              fortune: 8
+              unbreaking: 8
+          - material: DIAMOND_PICKAXE
+            name: "<red>Picareta do Rei"
+            enchantments:
+              efficiency: 8
+              fortune: 8
+              unbreaking: 8
+          - material: DIAMOND_SHOVEL
+            name: "<red>Pa do Rei"
+            enchantments:
+              efficiency: 8
+              fortune: 8
+              unbreaking: 8
+          - material: BOW
+            name: "<red>Arco do Rei"
+            enchantments:
+              power: 8
+              unbreaking: 8
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 8
+              fire_aspect: 1
+              unbreaking: 8
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<red>Capacete do Rei"
+            enchantments:
+              protection: 8
+              unbreaking: 8
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<red>Peitoral do Rei"
+            enchantments:
+              protection: 8
+              unbreaking: 8
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<red>Calcas do Rei"
+            enchantments:
+              protection: 8
+              unbreaking: 8
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<red>Botas do Rei"
+            enchantments:
+              protection: 8
+              unbreaking: 8
+        comandos: []
+
+  rei_semanal:
+    categoria: free
+    grupo: rei
+    slot: 22
+    icone:
+      material: DIAMOND_SWORD
+      name: "<red><bold>Kit Rei Semanal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa semanal do"
+        - "<gray>rank Rei."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.rei"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: WEEKLY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<red>Espada do Rei"
+            enchantments:
+              sharpness: 9
+              fire_aspect: 1
+              unbreaking: 9
+          - material: DIAMOND_AXE
+            name: "<red>Machado do Rei"
+            enchantments:
+              efficiency: 9
+              fortune: 9
+              unbreaking: 9
+          - material: DIAMOND_PICKAXE
+            name: "<red>Picareta do Rei"
+            enchantments:
+              efficiency: 9
+              fortune: 9
+              unbreaking: 9
+          - material: DIAMOND_SHOVEL
+            name: "<red>Pa do Rei"
+            enchantments:
+              efficiency: 9
+              fortune: 9
+              unbreaking: 9
+          - material: BOW
+            name: "<red>Arco do Rei"
+            enchantments:
+              power: 9
+              unbreaking: 9
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 9
+              fire_aspect: 1
+              unbreaking: 9
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<red>Capacete do Rei"
+            enchantments:
+              protection: 9
+              unbreaking: 9
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<red>Peitoral do Rei"
+            enchantments:
+              protection: 9
+              unbreaking: 9
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<red>Calcas do Rei"
+            enchantments:
+              protection: 9
+              unbreaking: 9
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<red>Botas do Rei"
+            enchantments:
+              protection: 9
+              unbreaking: 9
+        comandos: []
+
+  rei_mensal:
+    categoria: free
+    grupo: rei
+    slot: 24
+    icone:
+      material: DIAMOND_SWORD
+      name: "<red><bold>Kit Rei Mensal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa mensal do"
+        - "<gray>rank Rei."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.rei"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: MONTHLY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<red>Espada do Rei"
+            enchantments:
+              sharpness: 10
+              unbreaking: 10
+              fire_aspect: 2
+              looting: 1
+          - material: DIAMOND_AXE
+            name: "<red>Machado do Rei"
+            enchantments:
+              efficiency: 10
+              fortune: 10
+              unbreaking: 10
+          - material: DIAMOND_PICKAXE
+            name: "<red>Picareta do Rei"
+            enchantments:
+              efficiency: 10
+              fortune: 10
+              unbreaking: 10
+          - material: DIAMOND_SHOVEL
+            name: "<red>Pa do Rei"
+            enchantments:
+              efficiency: 10
+              fortune: 10
+              unbreaking: 10
+          - material: BOW
+            name: "<red>Arco do Rei"
+            enchantments:
+              power: 10
+              flame: 2
+              unbreaking: 10
+              infinity: 1
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 10
+              unbreaking: 10
+              fire_aspect: 2
+              looting: 1
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<red>Capacete do Rei"
+            enchantments:
+              protection: 10
+              unbreaking: 10
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<red>Peitoral do Rei"
+            enchantments:
+              protection: 10
+              unbreaking: 10
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<red>Calcas do Rei"
+            enchantments:
+              protection: 10
+              unbreaking: 10
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<red>Botas do Rei"
+            enchantments:
+              protection: 10
+              unbreaking: 10
+        comandos: []
+
+  imperador_diario:
+    categoria: free
+    grupo: imperador
+    slot: 20
+    icone:
+      material: DIAMOND_SWORD
+      name: "<light_purple><bold>Kit Imperador Diario</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa diaria do"
+        - "<gray>rank Imperador."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.imperador"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: DAILY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<light_purple>Espada do Imperador"
+            enchantments:
+              sharpness: 9
+              fire_aspect: 1
+              unbreaking: 9
+          - material: DIAMOND_AXE
+            name: "<light_purple>Machado do Imperador"
+            enchantments:
+              efficiency: 9
+              fortune: 9
+              unbreaking: 9
+          - material: DIAMOND_PICKAXE
+            name: "<light_purple>Picareta do Imperador"
+            enchantments:
+              efficiency: 9
+              fortune: 9
+              unbreaking: 9
+          - material: DIAMOND_SHOVEL
+            name: "<light_purple>Pa do Imperador"
+            enchantments:
+              efficiency: 9
+              fortune: 9
+              unbreaking: 9
+          - material: BOW
+            name: "<light_purple>Arco do Imperador"
+            enchantments:
+              power: 9
+              unbreaking: 9
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 9
+              fire_aspect: 1
+              unbreaking: 9
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<light_purple>Capacete do Imperador"
+            enchantments:
+              protection: 9
+              unbreaking: 9
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<light_purple>Peitoral do Imperador"
+            enchantments:
+              protection: 9
+              unbreaking: 9
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<light_purple>Calcas do Imperador"
+            enchantments:
+              protection: 9
+              unbreaking: 9
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<light_purple>Botas do Imperador"
+            enchantments:
+              protection: 9
+              unbreaking: 9
+        comandos: []
+
+  imperador_semanal:
+    categoria: free
+    grupo: imperador
+    slot: 22
+    icone:
+      material: DIAMOND_SWORD
+      name: "<light_purple><bold>Kit Imperador Semanal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa semanal do"
+        - "<gray>rank Imperador."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.imperador"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: WEEKLY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<light_purple>Espada do Imperador"
+            enchantments:
+              sharpness: 10
+              fire_aspect: 1
+              unbreaking: 10
+          - material: DIAMOND_AXE
+            name: "<light_purple>Machado do Imperador"
+            enchantments:
+              efficiency: 10
+              fortune: 10
+              unbreaking: 10
+          - material: DIAMOND_PICKAXE
+            name: "<light_purple>Picareta do Imperador"
+            enchantments:
+              efficiency: 10
+              fortune: 10
+              unbreaking: 10
+          - material: DIAMOND_SHOVEL
+            name: "<light_purple>Pa do Imperador"
+            enchantments:
+              efficiency: 10
+              fortune: 10
+              unbreaking: 10
+          - material: BOW
+            name: "<light_purple>Arco do Imperador"
+            enchantments:
+              power: 10
+              unbreaking: 10
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 10
+              fire_aspect: 1
+              unbreaking: 10
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<light_purple>Capacete do Imperador"
+            enchantments:
+              protection: 10
+              unbreaking: 10
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<light_purple>Peitoral do Imperador"
+            enchantments:
+              protection: 10
+              unbreaking: 10
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<light_purple>Calcas do Imperador"
+            enchantments:
+              protection: 10
+              unbreaking: 10
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<light_purple>Botas do Imperador"
+            enchantments:
+              protection: 10
+              unbreaking: 10
+        comandos: []
+
+  imperador_mensal:
+    categoria: free
+    grupo: imperador
+    slot: 24
+    icone:
+      material: DIAMOND_SWORD
+      name: "<light_purple><bold>Kit Imperador Mensal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa mensal do"
+        - "<gray>rank Imperador."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.imperador"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: MONTHLY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<light_purple>Espada do Imperador"
+            enchantments:
+              sharpness: 11
+              unbreaking: 11
+              fire_aspect: 1
+              looting: 2
+          - material: DIAMOND_AXE
+            name: "<light_purple>Machado do Imperador"
+            enchantments:
+              efficiency: 11
+              fortune: 11
+              unbreaking: 11
+          - material: DIAMOND_PICKAXE
+            name: "<light_purple>Picareta do Imperador"
+            enchantments:
+              efficiency: 11
+              fortune: 11
+              unbreaking: 11
+          - material: DIAMOND_SHOVEL
+            name: "<light_purple>Pa do Imperador"
+            enchantments:
+              efficiency: 11
+              fortune: 11
+              unbreaking: 11
+          - material: BOW
+            name: "<light_purple>Arco do Imperador"
+            enchantments:
+              power: 11
+              flame: 3
+              unbreaking: 11
+              infinity: 1
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 11
+              unbreaking: 11
+              fire_aspect: 1
+              looting: 2
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<light_purple>Capacete do Imperador"
+            enchantments:
+              protection: 11
+              unbreaking: 11
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<light_purple>Peitoral do Imperador"
+            enchantments:
+              protection: 11
+              unbreaking: 11
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<light_purple>Calcas do Imperador"
+            enchantments:
+              protection: 11
+              unbreaking: 11
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<light_purple>Botas do Imperador"
+            enchantments:
+              protection: 11
+              unbreaking: 11
+        comandos: []
+
+  monarca_diario:
+    categoria: free
+    grupo: monarca
+    slot: 20
+    icone:
+      material: DIAMOND_SWORD
+      name: "<yellow><bold>Kit Monarca Diario</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa diaria do"
+        - "<gray>rank Monarca."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.monarca"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: DAILY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<yellow>Espada do Monarca"
+            enchantments:
+              sharpness: 10
+              fire_aspect: 1
+              unbreaking: 10
+          - material: DIAMOND_AXE
+            name: "<yellow>Machado do Monarca"
+            enchantments:
+              efficiency: 10
+              fortune: 10
+              unbreaking: 10
+          - material: DIAMOND_PICKAXE
+            name: "<yellow>Picareta do Monarca"
+            enchantments:
+              efficiency: 10
+              fortune: 10
+              unbreaking: 10
+          - material: DIAMOND_SHOVEL
+            name: "<yellow>Pa do Monarca"
+            enchantments:
+              efficiency: 10
+              fortune: 10
+              unbreaking: 10
+          - material: BOW
+            name: "<yellow>Arco do Monarca"
+            enchantments:
+              power: 10
+              unbreaking: 10
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 10
+              fire_aspect: 1
+              unbreaking: 10
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<yellow>Capacete do Monarca"
+            enchantments:
+              protection: 10
+              unbreaking: 10
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<yellow>Peitoral do Monarca"
+            enchantments:
+              protection: 10
+              unbreaking: 10
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<yellow>Calcas do Monarca"
+            enchantments:
+              protection: 10
+              unbreaking: 10
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<yellow>Botas do Monarca"
+            enchantments:
+              protection: 10
+              unbreaking: 10
+        comandos: []
+
+  monarca_semanal:
+    categoria: free
+    grupo: monarca
+    slot: 22
+    icone:
+      material: DIAMOND_SWORD
+      name: "<yellow><bold>Kit Monarca Semanal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa semanal do"
+        - "<gray>rank Monarca."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.monarca"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: WEEKLY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<yellow>Espada do Monarca"
+            enchantments:
+              sharpness: 11
+              fire_aspect: 1
+              unbreaking: 11
+          - material: DIAMOND_AXE
+            name: "<yellow>Machado do Monarca"
+            enchantments:
+              efficiency: 11
+              fortune: 11
+              unbreaking: 11
+          - material: DIAMOND_PICKAXE
+            name: "<yellow>Picareta do Monarca"
+            enchantments:
+              efficiency: 11
+              fortune: 11
+              unbreaking: 11
+          - material: DIAMOND_SHOVEL
+            name: "<yellow>Pa do Monarca"
+            enchantments:
+              efficiency: 11
+              fortune: 11
+              unbreaking: 11
+          - material: BOW
+            name: "<yellow>Arco do Monarca"
+            enchantments:
+              power: 11
+              unbreaking: 11
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 11
+              fire_aspect: 1
+              unbreaking: 11
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<yellow>Capacete do Monarca"
+            enchantments:
+              protection: 11
+              unbreaking: 11
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<yellow>Peitoral do Monarca"
+            enchantments:
+              protection: 11
+              unbreaking: 11
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<yellow>Calcas do Monarca"
+            enchantments:
+              protection: 11
+              unbreaking: 11
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<yellow>Botas do Monarca"
+            enchantments:
+              protection: 11
+              unbreaking: 11
+        comandos: []
+
+  monarca_mensal:
+    categoria: free
+    grupo: monarca
+    slot: 24
+    icone:
+      material: DIAMOND_SWORD
+      name: "<yellow><bold>Kit Monarca Mensal</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa mensal do"
+        - "<gray>rank Monarca - o mais alto"
+        - "<gray>possivel."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.rank.monarca"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: MONTHLY
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<yellow>Espada do Monarca"
+            enchantments:
+              sharpness: 12
+              unbreaking: 12
+              fire_aspect: 2
+              looting: 3
+          - material: DIAMOND_AXE
+            name: "<yellow>Machado do Monarca"
+            enchantments:
+              efficiency: 12
+              fortune: 12
+              unbreaking: 12
+          - material: DIAMOND_PICKAXE
+            name: "<yellow>Picareta do Monarca"
+            enchantments:
+              efficiency: 12
+              fortune: 12
+              unbreaking: 12
+          - material: DIAMOND_SHOVEL
+            name: "<yellow>Pa do Monarca"
+            enchantments:
+              efficiency: 12
+              fortune: 12
+              unbreaking: 12
+          - material: BOW
+            name: "<yellow>Arco do Monarca"
+            enchantments:
+              power: 12
+              flame: 3
+              unbreaking: 12
+              infinity: 1
+              punch: 2
+          - material: DIAMOND_AXE
+            name: "<dark_red><bold>Machado Viking</bold>"
+            enchantments:
+              sharpness: 12
+              unbreaking: 12
+              fire_aspect: 2
+              looting: 3
+          - material: NETHERITE_UPGRADE_SMITHING_TEMPLATE
+            amount: 5
+            name: "<gray>Modelo de Ferraria: Netherite"
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<yellow>Capacete do Monarca"
+            enchantments:
+              protection: 12
+              unbreaking: 12
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<yellow>Peitoral do Monarca"
+            enchantments:
+              protection: 12
+              unbreaking: 12
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<yellow>Calcas do Monarca"
+            enchantments:
+              protection: 12
+              unbreaking: 12
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<yellow>Botas do Monarca"
+            enchantments:
+              protection: 12
+              unbreaking: 12
         comandos: []
 
   # -------------------------------------------------------- kits recorrentes de VIP
   # Portados 1:1 do antigo kits.yml do AlkaVips (mesmos itens/cooldowns). Nivel unico
-  # (sem upgrade pago - o "pagamento" ja foi a compra do VIP em si).
+  # (sem upgrade pago - o "pagamento" ja foi a compra do VIP em si). Reapontados
+  # 2026-08-23 pra categoria "vip" unica (slots redistribuidos, nao colidiam antes
+  # porque cada tier tinha sua propria tela).
 
   vip_diario:
     categoria: vip
-    slot: 10
+    grupo: vip
+    slot: 21
     icone:
       material: EMERALD
       name: "<#55FF55><bold>Kit VIP Diario</bold>"
@@ -200,8 +2875,9 @@ kits:
         comandos: []
 
   'vip+_diario':
-    categoria: 'vip+'
-    slot: 10
+    categoria: vip
+    grupo: 'vip+'
+    slot: 20
     icone:
       material: EMERALD
       name: "<#55FF55><bold>Kit VIP+ Diario</bold>"
@@ -227,8 +2903,9 @@ kits:
         comandos: []
 
   'vip+_semanal':
-    categoria: 'vip+'
-    slot: 11
+    categoria: vip
+    grupo: 'vip+'
+    slot: 22
     icone:
       material: EMERALD_BLOCK
       name: "<#55FF55><bold>Kit VIP+ Semanal</bold>"
@@ -254,8 +2931,9 @@ kits:
         comandos: []
 
   mvp_diario:
-    categoria: mvp
-    slot: 10
+    categoria: vip
+    grupo: mvp
+    slot: 20
     icone:
       material: DIAMOND
       name: "<#55AAFF><bold>Kit MVP Diario</bold>"
@@ -281,8 +2959,9 @@ kits:
         comandos: []
 
   mvp_semanal:
-    categoria: mvp
-    slot: 11
+    categoria: vip
+    grupo: mvp
+    slot: 22
     icone:
       material: DIAMOND_BLOCK
       name: "<#55AAFF><bold>Kit MVP Semanal</bold>"
@@ -308,8 +2987,9 @@ kits:
         comandos: []
 
   'mvp+_diario':
-    categoria: 'mvp+'
-    slot: 10
+    categoria: vip
+    grupo: 'mvp+'
+    slot: 20
     icone:
       material: DIAMOND
       name: "<#FF55FF><bold>Kit MVP+ Diario</bold>"
@@ -335,8 +3015,9 @@ kits:
         comandos: []
 
   'mvp+_semanal':
-    categoria: 'mvp+'
-    slot: 11
+    categoria: vip
+    grupo: 'mvp+'
+    slot: 22
     icone:
       material: DIAMOND_BLOCK
       name: "<#FF55FF><bold>Kit MVP+ Semanal</bold>"
@@ -362,8 +3043,9 @@ kits:
         comandos: []
 
   'mvp+_mensal':
-    categoria: 'mvp+'
-    slot: 12
+    categoria: vip
+    grupo: 'mvp+'
+    slot: 24
     icone:
       material: NETHERITE_SCRAP
       name: "<#FF55FF><bold>Kit MVP+ Mensal</bold>"
@@ -389,8 +3071,9 @@ kits:
         comandos: []
 
   alka_diario:
-    categoria: alka
-    slot: 10
+    categoria: vip
+    grupo: alka
+    slot: 20
     icone:
       material: NETHERITE_SCRAP
       name: "<#FFD700><bold>Kit ALKA Diario</bold>"
@@ -416,8 +3099,9 @@ kits:
         comandos: []
 
   alka_semanal:
-    categoria: alka
-    slot: 11
+    categoria: vip
+    grupo: alka
+    slot: 22
     icone:
       material: NETHERITE_INGOT
       name: "<#FFD700><bold>Kit ALKA Semanal</bold>"
@@ -443,8 +3127,9 @@ kits:
         comandos: []
 
   alka_mensal:
-    categoria: alka
-    slot: 12
+    categoria: vip
+    grupo: alka
+    slot: 24
     icone:
       material: NETHERITE_BLOCK
       name: "<#FFD700><bold>Kit ALKA Mensal</bold>"
@@ -470,8 +3155,9 @@ kits:
         comandos: []
 
   drakkar_diario:
-    categoria: drakkar
-    slot: 10
+    categoria: vip
+    grupo: drakkar
+    slot: 19
     icone:
       material: NETHERITE_INGOT
       name: "<#FF0000><bold>Kit DRAKKAR Diario</bold>"
@@ -497,8 +3183,9 @@ kits:
         comandos: []
 
   drakkar_semanal:
-    categoria: drakkar
-    slot: 11
+    categoria: vip
+    grupo: drakkar
+    slot: 21
     icone:
       material: NETHERITE_BLOCK
       name: "<#FF0000><bold>Kit DRAKKAR Semanal</bold>"
@@ -524,8 +3211,9 @@ kits:
         comandos: []
 
   drakkar_mensal:
-    categoria: drakkar
-    slot: 12
+    categoria: vip
+    grupo: drakkar
+    slot: 23
     icone:
       material: DRAGON_BREATH
       name: "<#FF0000><bold>Kit DRAKKAR Mensal</bold>"
@@ -548,4 +3236,799 @@ kits:
         itens:
           - material: DRAGON_BREATH
             amount: 8
+        comandos: []
+
+  # ------------------------------------------------- kits de boas-vindas de VIP
+  # Importados 2026-08-23 do material de referencia (drakkarkits/premium.yml) -
+  # kit UNICO (nao recorrente) por tier de VIP comprado. Gate por PLACEHOLDER
+  # igual aos recorrentes acima. mvp+ e alka NAO ganham kit de boas-vindas nesta
+  # leva (decisao do coordenador da tarefa).
+
+  vip_boasvindas_escudeiro:
+    categoria: vip
+    grupo: vip
+    slot: 23
+    icone:
+      material: IRON_CHESTPLATE
+      name: "<white><bold>Kit Boas-Vindas Escudeiro</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Presente unico de boas-vindas"
+        - "<gray>pros novos membros <#55FF55>VIP<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PLACEHOLDER
+            valor: "%alkavips_has_vip_vip%"
+            operador: EQUALS
+            comparar: "true"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: ONCE
+        usos-maximos: -1
+        itens:
+          - material: IRON_SWORD
+            name: "<white>Espada de Escudeiro"
+            enchantments:
+              sharpness: 2
+              unbreaking: 2
+          - material: IRON_PICKAXE
+            name: "<white>Picareta de Escudeiro"
+            enchantments:
+              efficiency: 2
+              unbreaking: 2
+          - material: GOLDEN_APPLE
+            amount: 8
+            name: "<gold>Maca Dourada"
+        armadura:
+          capacete:
+            material: IRON_HELMET
+            enchantments:
+              protection: 2
+          peitoral:
+            material: IRON_CHESTPLATE
+            enchantments:
+              protection: 2
+          calca:
+            material: IRON_LEGGINGS
+            enchantments:
+              protection: 2
+          bota:
+            material: IRON_BOOTS
+            enchantments:
+              protection: 2
+        comandos: []
+
+  vip_boasvindas_cavaleiro:
+    categoria: vip
+    grupo: 'vip+'
+    slot: 24
+    icone:
+      material: GOLDEN_CHESTPLATE
+      name: "<gold><bold>Kit Boas-Vindas Cavaleiro</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Presente unico de boas-vindas"
+        - "<gray>pros novos membros <#55FF55>VIP+<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PLACEHOLDER
+            valor: "%alkavips_has_vip_vip+%"
+            operador: EQUALS
+            comparar: "true"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: ONCE
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<gold>Espada de Cavaleiro"
+            enchantments:
+              sharpness: 3
+              unbreaking: 3
+              fire_aspect: 1
+          - material: DIAMOND_PICKAXE
+            name: "<gold>Picareta de Cavaleiro"
+            enchantments:
+              efficiency: 3
+              unbreaking: 3
+          - material: ENCHANTED_GOLDEN_APPLE
+            amount: 1
+            name: "<gold>Maca do Capeta"
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            enchantments:
+              protection: 3
+              unbreaking: 2
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            enchantments:
+              protection: 3
+              unbreaking: 2
+          calca:
+            material: DIAMOND_LEGGINGS
+            enchantments:
+              protection: 3
+              unbreaking: 2
+          bota:
+            material: DIAMOND_BOOTS
+            enchantments:
+              protection: 3
+              unbreaking: 2
+        comandos: []
+
+  vip_boasvindas_lorde:
+    categoria: vip
+    grupo: mvp
+    slot: 24
+    icone:
+      material: DIAMOND_CHESTPLATE
+      name: "<dark_aqua><bold>Kit Boas-Vindas Lorde</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Presente unico de boas-vindas"
+        - "<gray>pros novos membros <#55AAFF>MVP<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PLACEHOLDER
+            valor: "%alkavips_has_vip_mvp%"
+            operador: EQUALS
+            comparar: "true"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: ONCE
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<dark_aqua>Lamina do Lorde"
+            enchantments:
+              sharpness: 5
+              unbreaking: 3
+              fire_aspect: 2
+              looting: 2
+          - material: DIAMOND_PICKAXE
+            name: "<dark_aqua>Picareta Real"
+            enchantments:
+              efficiency: 5
+              unbreaking: 3
+              fortune: 2
+          - material: ENCHANTED_GOLDEN_APPLE
+            amount: 3
+            name: "<gold>Maca do Capeta"
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            enchantments:
+              protection: 4
+              unbreaking: 3
+              respiration: 3
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            enchantments:
+              protection: 4
+              unbreaking: 3
+          calca:
+            material: DIAMOND_LEGGINGS
+            enchantments:
+              protection: 4
+              unbreaking: 3
+          bota:
+            material: DIAMOND_BOOTS
+            enchantments:
+              protection: 4
+              unbreaking: 3
+              feather_falling: 3
+        offhand:
+          material: TOTEM_OF_UNDYING
+          amount: 1
+          name: "<aqua>Protecao do Lorde"
+        comandos: []
+
+  vip_boasvindas_drakkar:
+    categoria: vip
+    grupo: drakkar
+    slot: 25
+    icone:
+      material: NETHERITE_CHESTPLATE
+      name: "<red><bold>Kit Boas-Vindas Drakkar</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Presente unico de boas-vindas"
+        - "<gray>pro tier maximo, <#FF0000>DRAKKAR<gray>."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PLACEHOLDER
+            valor: "%alkavips_has_vip_drakkar%"
+            operador: EQUALS
+            comparar: "true"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: ONCE
+        usos-maximos: -1
+        itens:
+          - material: NETHERITE_SWORD
+            name: "<red><bold>Soberania Drakkar</bold>"
+            unbreakable: true
+            enchantments:
+              sharpness: 6
+              unbreaking: 5
+              fire_aspect: 2
+              looting: 3
+          - material: NETHERITE_PICKAXE
+            name: "<red><bold>Escavadora Drakkar</bold>"
+            unbreakable: true
+            enchantments:
+              efficiency: 6
+              unbreaking: 5
+              fortune: 3
+          - material: ENCHANTED_GOLDEN_APPLE
+            amount: 10
+            name: "<red>Reliquia Dourada"
+          - material: EXPERIENCE_BOTTLE
+            amount: 64
+            name: "<green>Frasco de XP Drakkar"
+        armadura:
+          capacete:
+            material: NETHERITE_HELMET
+            name: "<red><bold>Elmo Drakkar</bold>"
+            unbreakable: true
+            enchantments:
+              protection: 5
+              unbreaking: 5
+              respiration: 3
+          peitoral:
+            material: NETHERITE_CHESTPLATE
+            name: "<red><bold>Couraca Drakkar</bold>"
+            unbreakable: true
+            enchantments:
+              protection: 5
+              unbreaking: 5
+          calca:
+            material: NETHERITE_LEGGINGS
+            name: "<red><bold>Garfios Drakkar</bold>"
+            unbreakable: true
+            enchantments:
+              protection: 5
+              unbreaking: 5
+          bota:
+            material: NETHERITE_BOOTS
+            name: "<red><bold>Passo de Drakkar</bold>"
+            unbreakable: true
+            enchantments:
+              protection: 5
+              unbreaking: 5
+              feather_falling: 4
+        offhand:
+          material: TOTEM_OF_UNDYING
+          amount: 1
+          name: "<red><bold>Imortalidade Drakkar</bold>"
+        comandos: []
+
+  # ------------------------------------------------------------- kits exclusivos
+  # Substitui a antiga categoria "booster" (kit generico unico). Importados
+  # 2026-08-23 de boosters.yml/special.yml (drakkarkits) + 2 kits criados do zero
+  # (voto, influencer). Todos gateados por permissao alkakits.<x> (default:op),
+  # LP concede manualmente por enquanto.
+
+  booster_xp:
+    categoria: exclusivos
+    slot: 20
+    icone:
+      material: EXPERIENCE_BOTTLE
+      name: "<green><bold>Kit Booster XP</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kit exclusivo pra quem"
+        - "<gray>impulsiona o servidor"
+        - "<gray>no Discord."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.booster"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: CUSTOM
+        cooldown-segundos: 43200
+        usos-maximos: -1
+        itens:
+          - material: DIAMOND_SWORD
+            name: "<green><bold>⚡ Espada do Booster ⚡</bold>"
+            lore:
+              - "<gray>Kit exclusivo para Boosters do Discord"
+              - "<gray>Aumente o servidor e ganhe recompensas!"
+              - ""
+              - "<green><bold>BOOSTER EXCLUSIVO</bold>"
+            unbreakable: true
+            enchantments:
+              sharpness: 4
+              unbreaking: 3
+              looting: 2
+          - material: DIAMOND_PICKAXE
+            name: "<green><bold>⚡ Picareta do Booster ⚡</bold>"
+            unbreakable: true
+            enchantments:
+              efficiency: 4
+              unbreaking: 3
+              fortune: 2
+          - material: DIAMOND_AXE
+            name: "<green><bold>⚡ Machado do Booster ⚡</bold>"
+            unbreakable: true
+            enchantments:
+              efficiency: 4
+              unbreaking: 3
+          - material: GOLDEN_APPLE
+            amount: 16
+            name: "<gold>Maca Dourada"
+          - material: EXPERIENCE_BOTTLE
+            amount: 64
+            name: "<green><bold>Garrafa de Experiencia</bold>"
+          - material: DIAMOND
+            amount: 32
+            name: "<aqua>Diamantes"
+          - material: EMERALD
+            amount: 32
+            name: "<green>Esmeraldas"
+          - material: GOLDEN_CARROT
+            amount: 16
+            name: "<gold>Cenoura Dourada"
+        armadura:
+          capacete:
+            material: DIAMOND_HELMET
+            name: "<green><bold>⚡ Capacete do Booster ⚡</bold>"
+            unbreakable: true
+            enchantments:
+              protection: 3
+              unbreaking: 3
+              respiration: 2
+          peitoral:
+            material: DIAMOND_CHESTPLATE
+            name: "<green><bold>⚡ Peitoral do Booster ⚡</bold>"
+            unbreakable: true
+            enchantments:
+              protection: 3
+              unbreaking: 3
+          calca:
+            material: DIAMOND_LEGGINGS
+            name: "<green><bold>⚡ Calcas do Booster ⚡</bold>"
+            unbreakable: true
+            enchantments:
+              protection: 3
+              unbreaking: 3
+          bota:
+            material: DIAMOND_BOOTS
+            name: "<green><bold>⚡ Botas do Booster ⚡</bold>"
+            unbreakable: true
+            enchantments:
+              protection: 3
+              unbreaking: 3
+              feather_falling: 3
+        offhand:
+          material: SHIELD
+          name: "<green><bold>Escudo do Booster</bold>"
+          enchantments:
+            unbreaking: 2
+        comandos: []
+
+  booster_coins:
+    categoria: exclusivos
+    slot: 22
+    icone:
+      material: GOLD_INGOT
+      name: "<gold><bold>Kit Booster Coins</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kit premium pra quem"
+        - "<gray>impulsiona o servidor"
+        - "<gray>no Discord."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.booster"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: CUSTOM
+        cooldown-segundos: 43200
+        usos-maximos: -1
+        itens:
+          - material: NETHERITE_SWORD
+            name: "<gold><bold>💰 Espada do Booster 💰</bold>"
+            lore:
+              - "<gray>Kit premium para Boosters do Discord"
+              - "<gray>Apoie o servidor e receba recompensas!"
+              - ""
+              - "<gold><bold>BOOSTER PREMIUM</bold>"
+            unbreakable: true
+            enchantments:
+              sharpness: 5
+              unbreaking: 4
+              fire_aspect: 2
+              looting: 3
+          - material: NETHERITE_PICKAXE
+            name: "<gold><bold>💰 Picareta do Booster 💰</bold>"
+            unbreakable: true
+            enchantments:
+              efficiency: 5
+              unbreaking: 4
+              fortune: 3
+          - material: NETHERITE_AXE
+            name: "<gold><bold>💰 Machado do Booster 💰</bold>"
+            unbreakable: true
+            enchantments:
+              efficiency: 5
+              unbreaking: 4
+          - material: ENCHANTED_GOLDEN_APPLE
+            amount: 8
+            name: "<gold><bold>Maca Encantada</bold>"
+          - material: EXPERIENCE_BOTTLE
+            amount: 128
+            name: "<green><bold>Garrafa de Experiencia</bold>"
+          - material: DIAMOND
+            amount: 64
+            name: "<aqua>Diamantes"
+          - material: EMERALD
+            amount: 64
+            name: "<green>Esmeraldas"
+          - material: GOLD_INGOT
+            amount: 64
+            name: "<gold>Lingotes de Ouro"
+          - material: SHULKER_BOX
+            amount: 2
+            name: "<dark_purple>Caixa Shulker"
+        armadura:
+          capacete:
+            material: NETHERITE_HELMET
+            name: "<gold><bold>💰 Capacete do Booster 💰</bold>"
+            unbreakable: true
+            enchantments:
+              protection: 4
+              unbreaking: 4
+              respiration: 3
+              aqua_affinity: 1
+          peitoral:
+            material: NETHERITE_CHESTPLATE
+            name: "<gold><bold>💰 Peitoral do Booster 💰</bold>"
+            unbreakable: true
+            enchantments:
+              protection: 4
+              unbreaking: 4
+          calca:
+            material: NETHERITE_LEGGINGS
+            name: "<gold><bold>💰 Calcas do Booster 💰</bold>"
+            unbreakable: true
+            enchantments:
+              protection: 4
+              unbreaking: 4
+          bota:
+            material: NETHERITE_BOOTS
+            name: "<gold><bold>💰 Botas do Booster 💰</bold>"
+            unbreakable: true
+            enchantments:
+              protection: 4
+              unbreaking: 4
+              feather_falling: 4
+        offhand:
+          material: SHIELD
+          name: "<gold><bold>Escudo do Booster</bold>"
+          enchantments:
+            unbreaking: 3
+        comandos: []
+
+  founder:
+    categoria: exclusivos
+    slot: 24
+    icone:
+      material: BEACON
+      name: "<dark_purple><bold>⭐ Founder Kit ⭐</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kit exclusivo pros"
+        - "<gray>fundadores do servidor."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.founder"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: ONCE
+        usos-maximos: -1
+        itens:
+          - material: NETHERITE_SWORD
+            name: "<dark_purple><bold>⭐</bold> <light_purple>Espada do Fundador <dark_purple><bold>⭐</bold>"
+            lore:
+              - "<gray>Uma arma lendaria que pertence"
+              - "<gray>apenas aos fundadores deste servidor."
+              - ""
+              - "<dark_purple><bold>PODER MAXIMO!</bold>"
+            unbreakable: true
+            enchantments:
+              sharpness: 5
+              unbreaking: 4
+              fire_aspect: 2
+              looting: 3
+              sweeping_edge: 3
+          - material: NETHERITE_PICKAXE
+            name: "<dark_purple><bold>⭐</bold> <light_purple>Picareta do Fundador <dark_purple><bold>⭐</bold>"
+            lore:
+              - "<gray>A melhor ferramenta de mineracao"
+            unbreakable: true
+            enchantments:
+              efficiency: 5
+              unbreaking: 4
+              fortune: 3
+              silk_touch: 1
+          - material: NETHERITE_AXE
+            name: "<dark_purple><bold>⭐</bold> <light_purple>Machado do Fundador <dark_purple><bold>⭐</bold>"
+            unbreakable: true
+            enchantments:
+              efficiency: 5
+              unbreaking: 4
+              fortune: 3
+          - material: ENCHANTED_GOLDEN_APPLE
+            amount: 16
+            name: "<dark_purple><bold>⭐</bold> <gold>Maca Encantada do Fundador <dark_purple><bold>⭐</bold>"
+          - material: EXPERIENCE_BOTTLE
+            amount: 128
+            name: "<green><bold>Garrafa de Experiencia</bold>"
+          - material: END_CRYSTAL
+            amount: 32
+            name: "<light_purple><bold>Cristal do End</bold>"
+          - material: SHULKER_BOX
+            amount: 4
+            name: "<dark_purple>Caixa Shulker"
+          - material: TOTEM_OF_UNDYING
+            amount: 3
+            name: "<dark_purple><bold>Totem da Imortalidade</bold>"
+        armadura:
+          capacete:
+            material: NETHERITE_HELMET
+            name: "<dark_purple><bold>⭐</bold> <light_purple>Capacete do Fundador <dark_purple><bold>⭐</bold>"
+            unbreakable: true
+            enchantments:
+              protection: 4
+              unbreaking: 4
+              respiration: 3
+              aqua_affinity: 1
+          peitoral:
+            material: NETHERITE_CHESTPLATE
+            name: "<dark_purple><bold>⭐</bold> <light_purple>Peitoral do Fundador <dark_purple><bold>⭐</bold>"
+            unbreakable: true
+            enchantments:
+              protection: 4
+              unbreaking: 4
+          calca:
+            material: NETHERITE_LEGGINGS
+            name: "<dark_purple><bold>⭐</bold> <light_purple>Calcas do Fundador <dark_purple><bold>⭐</bold>"
+            unbreakable: true
+            enchantments:
+              protection: 4
+              unbreaking: 4
+          bota:
+            material: NETHERITE_BOOTS
+            name: "<dark_purple><bold>⭐</bold> <light_purple>Botas do Fundador <dark_purple><bold>⭐</bold>"
+            unbreakable: true
+            enchantments:
+              protection: 4
+              unbreaking: 4
+              feather_falling: 4
+              soul_speed: 3
+        offhand:
+          material: SHIELD
+          name: "<dark_purple><bold>Escudo do Fundador</bold>"
+          enchantments:
+            unbreaking: 3
+        comandos: []
+
+  staff:
+    categoria: exclusivos
+    slot: 29
+    icone:
+      material: COMMAND_BLOCK
+      name: "<red><bold>⚡ Staff Kit ⚡</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Kit exclusivo pros"
+        - "<gray>membros da staff."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.staff"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: ONCE
+        usos-maximos: -1
+        itens:
+          - material: NETHERITE_SWORD
+            name: "<red><bold>⚡ Espada da Staff ⚡</bold>"
+            lore:
+              - "<gray>Kit exclusivo para membros da staff."
+              - "<gray>Use com responsabilidade!"
+              - ""
+              - "<red><bold>STAFF ONLY</bold>"
+            unbreakable: true
+            enchantments:
+              sharpness: 5
+              unbreaking: 4
+              fire_aspect: 2
+              looting: 3
+          - material: NETHERITE_PICKAXE
+            name: "<red><bold>⚡ Picareta da Staff ⚡</bold>"
+            unbreakable: true
+            enchantments:
+              efficiency: 5
+              unbreaking: 4
+              fortune: 3
+          - material: NETHERITE_AXE
+            name: "<red><bold>⚡ Machado da Staff ⚡</bold>"
+            unbreakable: true
+            enchantments:
+              efficiency: 5
+              unbreaking: 4
+          - material: ENCHANTED_GOLDEN_APPLE
+            amount: 8
+            name: "<gold><bold>Maca Encantada</bold>"
+          - material: EXPERIENCE_BOTTLE
+            amount: 64
+            name: "<green>Garrafa de Experiencia"
+          - material: SHULKER_BOX
+            amount: 2
+            name: "<dark_purple>Caixa Shulker"
+          - material: TOTEM_OF_UNDYING
+            amount: 2
+            name: "<dark_purple>Totem da Imortalidade"
+          - material: END_CRYSTAL
+            amount: 16
+            name: "<light_purple>Cristal do End"
+          - material: DIAMOND
+            amount: 64
+            name: "<aqua>Diamantes"
+        armadura:
+          capacete:
+            material: NETHERITE_HELMET
+            name: "<red><bold>⚡ Capacete da Staff ⚡</bold>"
+            unbreakable: true
+            enchantments:
+              protection: 4
+              unbreaking: 4
+              respiration: 3
+              aqua_affinity: 1
+          peitoral:
+            material: NETHERITE_CHESTPLATE
+            name: "<red><bold>⚡ Peitoral da Staff ⚡</bold>"
+            unbreakable: true
+            enchantments:
+              protection: 4
+              unbreaking: 4
+          calca:
+            material: NETHERITE_LEGGINGS
+            name: "<red><bold>⚡ Calcas da Staff ⚡</bold>"
+            unbreakable: true
+            enchantments:
+              protection: 4
+              unbreaking: 4
+          bota:
+            material: NETHERITE_BOOTS
+            name: "<red><bold>⚡ Botas da Staff ⚡</bold>"
+            unbreakable: true
+            enchantments:
+              protection: 4
+              unbreaking: 4
+              feather_falling: 4
+        offhand:
+          material: SHIELD
+          name: "<red><bold>Escudo da Staff</bold>"
+          enchantments:
+            unbreaking: 3
+        comandos: []
+
+  voto:
+    categoria: exclusivos
+    slot: 31
+    icone:
+      material: GOLDEN_CARROT
+      name: "<yellow><bold>Kit Voto</bold>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Obrigado por votar e"
+        - "<gray>ajudar o servidor a crescer!"
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.vote"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: DAILY
+        usos-maximos: -1
+        itens:
+          - material: GOLDEN_APPLE
+            amount: 4
+            name: "<gold>Maca Dourada"
+          - material: EXPERIENCE_BOTTLE
+            amount: 16
+            name: "<green>Frasco de Experiencia"
+          - material: IRON_INGOT
+            amount: 8
+            name: "<white>Lingote de Ferro"
+          - material: ARROW
+            amount: 32
+            name: "<gray>Flechas"
+          - material: GOLDEN_CARROT
+            amount: 4
+            name: "<gold>Cenoura Dourada"
+        comandos: []
+
+  influencer:
+    categoria: exclusivos
+    slot: 33
+    icone:
+      material: TOTEM_OF_UNDYING
+      name: "<gradient:#FF55FF:#FFAA00><bold>Kit Influencer</bold></gradient>"
+      lore:
+        - "<dark_gray><st>――――――――――――――――――</st>"
+        - "<gray>Recompensa mensal pros"
+        - "<gray>criadores de conteudo"
+        - "<gray>parceiros do servidor."
+        - "<dark_gray><st>――――――――――――――――――</st>"
+    requisitos: []
+    niveis:
+      1:
+        requisitos:
+          - tipo: PERMISSION
+            valor: "alkakits.influencer"
+        moeda: null
+        custo: 0
+        buy-delay-segundos: 0
+        cooldown-tipo: MONTHLY
+        usos-maximos: -1
+        itens:
+          - material: ENCHANTED_GOLDEN_APPLE
+            amount: 4
+            name: "<gold><bold>Maca Encantada</bold>"
+          - material: NETHERITE_INGOT
+            amount: 4
+            name: "<dark_gray>Lingote de Netherite"
+          - material: TOTEM_OF_UNDYING
+            amount: 1
+            name: "<light_purple><bold>Totem da Imortalidade</bold>"
+          - material: DIAMOND_BLOCK
+            amount: 8
+            name: "<aqua>Bloco de Diamante"
+          - material: SHULKER_BOX
+            amount: 2
+            name: "<light_purple>Caixa Shulker"
         comandos: []

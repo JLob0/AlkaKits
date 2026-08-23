@@ -47,6 +47,16 @@ alkakits-kits:
       - "<dark_gray><st>――――――――――――――――――</st>"
       - "<gray>Nivel atual: <white>{atual}<gray>/<white>{maximo}"
       - "<yellow>➤ <gray>Clique para abrir"
+  pagina-anterior:
+    material: ARROW
+    name: "<yellow><bold>« Pagina Anterior</bold>"
+    lore:
+      - "<dark_gray>Clique para voltar uma pagina"
+  proxima-pagina:
+    material: ARROW
+    name: "<yellow><bold>Proxima Pagina »</bold>"
+    lore:
+      - "<dark_gray>Clique para avancar uma pagina"
 
 # ------------------------- Preview de nivel -------------------------
 alkakits-preview:

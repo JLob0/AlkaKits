@@ -15,13 +15,15 @@ alkakits-categorias:
   # H=header
 
 alkakits-kits:
-  rows: 4
+  rows: 6
   layout:
     - "____H____"
     - "_________"
     - "_________"
+    - "_________"
+    - "_________"
     - "____V____"
-  # H=header (icone da categoria), V=voltar
+  # H=header (icone da categoria/grupo), V=voltar
 
 alkakits-preview:
   rows: 5

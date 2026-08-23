@@ -5,10 +5,10 @@ voucher:
 
 # Concessoes automaticas - so os dois gatilhos que existem de verdade (ver analise
 # do AdvancedKits, 2026-08-13): primeiro join do jogador e cada respawn.
+# Kit inicial removido 2026-08-23: AlkaEssentials ja cobre o kit de boas-vindas do
+# primeiro join, nao precisa duplicar aqui.
 gatilhos:
-  primeiro-join:
-    - kit: iniciante
-      nivel: 1
+  primeiro-join: []
   respawn: []
 
 menu:

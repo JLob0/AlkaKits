@@ -90,15 +90,29 @@ public final class CommandKits implements CommandExecutor, TabCompleter {
     }
 
     private void openKitsMenu(Player player, String category) {
-        new KitsMenu(plugin, player, category, kitManager, progressManager, claimService,
-                this::openCategoriesMenu, this::openPreviewMenu).open();
+        openKitsMenu(player, category, null, 0);
+    }
+
+    private void openKitsMenu(Player player, String category, String group) {
+        openKitsMenu(player, category, group, 0);
+    }
+
+    /** group == null: landing da categoria (kits avulsos + icones de grupo).
+     * group != null: kits de dentro de um grupo especifico - ver KitsMenu. */
+    private void openKitsMenu(Player player, String category, String group, int page) {
+        java.util.function.Consumer<Player> onBack = group == null
+                ? this::openCategoriesMenu
+                : p -> openKitsMenu(p, category, null, 0);
+        new KitsMenu(plugin, player, category, group, page, kitManager, progressManager, claimService,
+                onBack, this::openPreviewMenu, (p, g) -> openKitsMenu(p, category, g, 0),
+                (p, newPage) -> openKitsMenu(p, category, group, newPage)).open();
     }
 
     private void openPreviewMenu(Player player, Kit kit) {
         KitProgress progress = progressManager.getProgress(player.getUniqueId(), kit.getId());
         int initialLevel = Math.max(1, Math.min(kit.getMaxLevel(), progress.unlockedLevel() + 1));
         new PreviewMenu(plugin, player, kit, initialLevel, claimService, progressManager,
-                economyService, p -> openKitsMenu(p, kit.getCategory())).open();
+                economyService, p -> openKitsMenu(p, kit.getCategory(), kit.getGroup(), 0)).open();
     }
 
     @Override

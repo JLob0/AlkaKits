@@ -16,14 +16,19 @@ public final class Kit {
 
     private final String id;
     private final String category;
+    /** Agrupa kits da mesma familia (ex: todos os kits do rank "campones") num sub-menu
+     * proprio - null = kit fica direto na tela da categoria, sem sub-menu (ver
+     * KitManager#getGroupsInCategory / KitsMenu). */
+    private final String group;
     private final int slot;
     private final ItemStack icon;
     private final List<Requirement> requirements;
     private final TreeMap<Integer, KitLevel> levels;
 
-    public Kit(String id, String category, int slot, ItemStack icon, List<Requirement> requirements, Map<Integer, KitLevel> levels) {
+    public Kit(String id, String category, String group, int slot, ItemStack icon, List<Requirement> requirements, Map<Integer, KitLevel> levels) {
         this.id = id;
         this.category = category;
+        this.group = group;
         this.slot = slot;
         this.icon = icon;
         this.requirements = requirements;
@@ -40,6 +45,10 @@ public final class Kit {
 
     public String getCategory() {
         return category;
+    }
+
+    public String getGroup() {
+        return group;
     }
 
     public ItemStack getIcon() {
