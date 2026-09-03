@@ -33,13 +33,16 @@ import java.util.function.Consumer;
  * </ul>
  * Clicar num KIT (em qualquer um dos dois modos) sempre abre {@link PreviewMenu}.
  *
- * <p>Layout: grade de ate 16 icones por pagina (4 linhas internas x 4 colunas
- * espacadas), SEMPRE centralizada verticalmente E horizontalmente conforme a
+ * <p>Layout: grade de ate 16 icones por pagina (4 linhas internas x ATE 5 colunas
+ * por linha), SEMPRE centralizada verticalmente E horizontalmente conforme a
  * quantidade real de itens daquela pagina (ver {@link #slotsFor(int)}) - uma tela
- * com so 2-3 itens fica com eles no meio, nao amontoados num canto. O campo
- * {@code slot:} de cada Kit/KitGroup no YAML deixou de ser uma posicao exata na
- * tela pra virar so a ORDEM de exibicao (numero menor aparece primeiro) - a
- * posicao de verdade e sempre calculada aqui. Passa de 16 itens numa pagina e
+ * com so 2-3 itens fica com eles no meio, nao amontoados num canto. Com exatamente
+ * 10 itens (ex: os 10 grupos de rank em "kits gratis") o resultado e um bloco 2x5
+ * limpo (linhas 2/3, colunas 2-6 = slots 20-24 e 29-33) em vez de 3 linhas
+ * desiguais - decisao 2026-09-02 apos pedido do usuario pra esse layout especifico.
+ * O campo {@code slot:} de cada Kit/KitGroup no YAML deixou de ser uma posicao
+ * exata na tela pra virar so a ORDEM de exibicao (numero menor aparece primeiro) -
+ * a posicao de verdade e sempre calculada aqui. Passa de 16 itens numa pagina e
  * aparecem os botoes de pagina anterior/proxima automaticamente.</p>
  */
 public final class KitsMenu extends KitGui {
@@ -49,9 +52,11 @@ public final class KitsMenu extends KitGui {
     private static final int[][] CENTERED_ROWS = {
             {}, {2}, {2, 3}, {1, 2, 3}, {1, 2, 3, 4}
     };
-    /** Colunas (dentro de uma linha de 9) centralizadas conforme quantos itens essa linha tem. */
+    /** Colunas (dentro de uma linha de 9) centralizadas conforme quantos itens essa linha tem.
+     * 5 itens usa colunas CONSECUTIVAS (2-6, sem gaps) em vez do padrao espacado de
+     * 1-4 itens - decisao deliberada pra ficar compacto/em bloco (ver classe acima). */
     private static final int[][] CENTERED_COLS = {
-            {}, {4}, {3, 5}, {2, 4, 6}, {1, 3, 5, 7}
+            {}, {4}, {3, 5}, {2, 4, 6}, {1, 3, 5, 7}, {2, 3, 4, 5, 6}
     };
     private static final int PREV_SLOT = 46;
     private static final int NEXT_SLOT = 52;
@@ -123,14 +128,14 @@ public final class KitsMenu extends KitGui {
 
     /** Slots (0-53) pra exibir exatamente {@code count} itens (1-16) centralizados -
      * ver CENTERED_ROWS/CENTERED_COLS. Distribui os itens em quantas linhas forem
-     * necessarias (max 4/linha), o mais equilibrado possivel, e centraliza tanto o
+     * necessarias (max 5/linha), o mais equilibrado possivel, e centraliza tanto o
      * bloco de linhas usadas quanto os itens dentro de cada linha parcial. */
     private static int[] slotsFor(int count) {
         count = Math.max(0, Math.min(count, PAGE_SIZE));
         if (count == 0) {
             return new int[0];
         }
-        int rowsNeeded = (count + 3) / 4;
+        int rowsNeeded = (count + 4) / 5;
         int[] rows = CENTERED_ROWS[rowsNeeded];
 
         int base = count / rowsNeeded;
