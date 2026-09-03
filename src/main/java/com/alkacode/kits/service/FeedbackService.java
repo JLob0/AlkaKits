@@ -8,11 +8,19 @@ import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import net.kyori.adventure.title.Title;
 
 import java.time.Duration;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 /**
@@ -23,10 +31,12 @@ import java.util.logging.Level;
  * memoria project-alkakits): a mesma config de "sucesso"/"sem permissao"/etc serve
  * pra qualquer kit sem repetir 10 blocos identicos por nivel.
  */
-public final class FeedbackService {
+public final class FeedbackService implements Listener {
 
     private final JavaPlugin plugin;
     private final Messages messages;
+    /** UUIDs de fireworks de celebracao cujo dano deve ser suprimido - ver launchFirework/onFireworkDamage. */
+    private final Set<UUID> suppressedFireworks = ConcurrentHashMap.newKeySet();
 
     public FeedbackService(JavaPlugin plugin, Messages messages) {
         this.plugin = plugin;
@@ -79,8 +89,30 @@ public final class FeedbackService {
         meta.setPower(Math.max(0, section.getInt("potencia", 1)));
         firework.setFireworkMeta(meta);
 
-        // detona na hora em vez de subir voando - e feedback instantaneo de recompensa, nao um foguete de verdade.
+        // detona na hora em vez de subir voando - e feedback instantaneo de recompensa, nao
+        // um foguete de verdade. MAS Firework#detonate() com efeito anexado causa dano de
+        // explosao real (5 + 2*efeitos, raio de 5 blocos, causa ENTITY_EXPLOSION) igual um
+        // foguete de crossbow - sem isso, quem pegava/comprava kit levava dano so pelo efeito
+        // visual, e quem estivesse por perto tambem (bug real 30/08).
+        //
+        // Suprime so o dano causado POR ESSE foguete especifico (compara UUID, nao so a causa -
+        // nao queremos engolir uma ENTITY_EXPLOSION de outra coisa acontecendo no mesmo instante).
+        // NAO desregistra logo depois de detonate() (bug real - o dano da explosao nao e sempre
+        // entregue de forma sincrona dentro da propria chamada, entao um listener temporario
+        // registrado/desregistrado na mesma call perdia o evento e o jogador tomava dano mesmo
+        // assim). Em vez disso, marca o UUID por alguns ticks (janela generosa) num listener
+        // PERSISTENTE (onFireworkDamage abaixo, registrado uma vez no onEnable do plugin).
+        suppressedFireworks.add(firework.getUniqueId());
+        Bukkit.getScheduler().runTaskLater(plugin, () -> suppressedFireworks.remove(firework.getUniqueId()), 5L);
         firework.detonate();
+    }
+
+    /** Cancela dano de explosao vindo de fireworks de celebracao registrados via launchFirework - registrar UMA VEZ no onEnable. */
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onFireworkDamage(EntityDamageByEntityEvent event) {
+        if (event.getDamager() instanceof Firework firework && suppressedFireworks.contains(firework.getUniqueId())) {
+            event.setCancelled(true);
+        }
     }
 
     private org.bukkit.Color parseColor(String name) {

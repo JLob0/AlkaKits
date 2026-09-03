@@ -71,6 +71,7 @@ public final class AlkaKitsPlugin extends AlkaPlugin {
         getServer().getPluginManager().registerEvents(new KitProgressListener(progressManager), this);
         getServer().getPluginManager().registerEvents(new GrantTriggerListener(grantTriggerManager), this);
         getServer().getPluginManager().registerEvents(new VoucherRedeemListener(voucherManager, messages), this);
+        getServer().getPluginManager().registerEvents(feedbackService, this);
 
         CommandKits commandKits = new CommandKits(this, kitManager, progressManager, claimService, economyService, voucherManager, messages);
         getCommand("kits").setExecutor(commandKits);
@@ -89,6 +90,11 @@ public final class AlkaKitsPlugin extends AlkaPlugin {
         for (Player player : getServer().getOnlinePlayers()) {
             progressManager.onJoin(player.getUniqueId());
         }
+
+        // NPC "suprimentos" (AlkaNpcs, softdepend) - clique abre o menu de kits, mesmo
+        // comportamento de /kits sem argumentos.
+        com.alkacode.kits.hook.AlkaNpcsHook.tryRegister(this, "suprimentos",
+                player -> player.performCommand("kits"));
 
         getLogger().info("AlkaKits habilitado (" + kitManager.getKits().size() + " kits carregados).");
     }
