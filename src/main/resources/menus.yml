@@ -8,6 +8,7 @@
 
 common:
   voltar:
+    ia-item: boxpixstudio:arrow_left2_v1
     material: ARROW
     name: "<gray><bold>← Voltar</bold>"
     lore:
@@ -17,6 +18,7 @@ common:
 alkakits-categorias:
   title: "<gradient:#FFAA00:#FFE055><bold>Kits</bold></gradient>"
   header:
+    ia-item: boxpixstudio:info_v1
     material: CHEST
     name: "<gradient:#FFAA00:#FFE055><bold>✦ Central de Kits ✦</bold></gradient>"
     lore:
@@ -48,11 +50,13 @@ alkakits-kits:
       - "<gray>Nivel atual: <white>{atual}<gray>/<white>{maximo}"
       - "<yellow>➤ <gray>Clique para abrir"
   pagina-anterior:
+    ia-item: boxpixstudio:arrow_left_v1
     material: ARROW
     name: "<yellow><bold>« Pagina Anterior</bold>"
     lore:
       - "<dark_gray>Clique para voltar uma pagina"
   proxima-pagina:
+    ia-item: boxpixstudio:arrow_right_v1
     material: ARROW
     name: "<yellow><bold>Proxima Pagina »</bold>"
     lore:
@@ -70,9 +74,11 @@ alkakits-preview:
       - "<gray>entre os niveis deste kit."
       - "<dark_gray><st>――――――――――――――――――</st>"
   nav-anterior:
+    ia-item: boxpixstudio:arrow_left_v1
     material: ARROW
     name: "<gray><bold>← Nivel anterior</bold>"
   nav-proximo:
+    ia-item: boxpixstudio:arrow_right_v1
     material: ARROW
     name: "<gray><bold>Proximo nivel →</bold>"
   nivel-superado:
@@ -82,18 +88,21 @@ alkakits-preview:
       - "<gray>Voce ja esta num nivel mais"
       - "<gray>avancado deste kit."
   voltar:
+    ia-item: boxpixstudio:arrow_left2_v1
     material: OAK_DOOR
     name: "<gray><bold>← Voltar</bold>"
     lore:
       - "<dark_gray>Clique para voltar"
   botao:
     CLAIMABLE:
+      ia-item: boxpixstudio:check_v1
       material: EMERALD
       name: "<gradient:#55FF55:#00FF00><bold>✔ Clique para reivindicar!</bold></gradient>"
       lore:
         - "<gray>Seu kit esta pronto."
         - "<gray>Clique para receber os itens agora."
     PURCHASABLE:
+      ia-item: boxpixstudio:check_v1
       material: EMERALD
       name: "<gradient:#FFD700:#FFA500><bold>💰 Clique para comprar!</bold></gradient>"
       lore:
@@ -102,12 +111,14 @@ alkakits-preview:
         - ""
         - "<yellow>Preco: <gold>{preco} <white>{moeda}"
     LOCKED:
+      ia-item: boxpixstudio:cross_v1
       material: BARRIER
       name: "<red>✖ Voce nao tem permissao."
       lore:
         - "<gray>Este kit exige uma permissao"
         - "<gray>que voce ainda nao possui."
     REQUIREMENT_NOT_MET:
+      ia-item: boxpixstudio:cross_v1
       material: BARRIER
       name: "<red>✖ Requisitos nao cumpridos."
       lore:
@@ -126,6 +137,7 @@ alkakits-preview:
         - "<gray>Voce ja reivindicou este"
         - "<gray>kit recentemente."
     INSUFFICIENT_FUNDS:
+      ia-item: boxpixstudio:cross_v1
       material: GOLD_NUGGET
       name: "<red>✖ Saldo insuficiente."
       lore:

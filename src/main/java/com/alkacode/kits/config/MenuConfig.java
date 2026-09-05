@@ -1,5 +1,6 @@
 package com.alkacode.kits.config;
 
+import com.alkacode.kits.hook.ItemsAdderHook;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
@@ -89,11 +90,16 @@ public final class MenuConfig {
         if (section == null) {
             return new ItemStack(Material.STONE);
         }
-        Material material = Material.matchMaterial(section.getString("material", "STONE"));
-        if (material == null) {
-            material = Material.STONE;
+        // ia-item (namespace:id do ItemsAdder) tem prioridade; cai no material vanilla
+        // se o IA nao estiver instalado ou o id nao existir (softdepend, nunca quebra).
+        ItemStack item = ItemsAdderHook.resolve(section.getString("ia-item"));
+        if (item == null) {
+            Material material = Material.matchMaterial(section.getString("material", "STONE"));
+            if (material == null) {
+                material = Material.STONE;
+            }
+            item = new ItemStack(material);
         }
-        ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
         String name = name(path, placeholders);
         if (name != null && !name.isEmpty()) {
