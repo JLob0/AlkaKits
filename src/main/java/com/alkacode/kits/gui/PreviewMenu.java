@@ -9,6 +9,7 @@ import com.alkacode.kits.manager.KitProgressManager;
 import com.alkacode.kits.service.KitClaimService;
 import com.alkacode.kits.service.KitsEconomyService;
 import com.alkacode.kits.util.GuiStyle;
+import com.alkacode.kits.util.TimeUtil;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -98,7 +99,7 @@ public final class PreviewMenu extends KitGui {
         }
         if (viewingLevel == progress.unlockedLevel() && viewingLevel >= 1) {
             KitStatus status = claimService.evaluateClaimStatus(player, kit);
-            setAt('A', statusItem(status, levelDef), status == KitStatus.CLAIMABLE ? e -> {
+            setAt('A', statusItem(status, levelDef, progress), status == KitStatus.CLAIMABLE ? e -> {
                 claimService.claim(player, kit);
                 refresh();
             } : null);
@@ -106,23 +107,39 @@ public final class PreviewMenu extends KitGui {
         }
         // unico caso restante: viewingLevel == progress.unlockedLevel() + 1 (proximo nivel comspravel)
         KitStatus status = claimService.evaluateBuyStatus(player, kit);
-        setAt('A', statusItem(status, levelDef), status == KitStatus.PURCHASABLE ? e -> {
+        setAt('A', statusItem(status, levelDef, progress), status == KitStatus.PURCHASABLE ? e -> {
             claimService.buyLevel(player, kit);
             refresh();
         } : null);
     }
 
-    private ItemStack statusItem(KitStatus status, KitLevel levelDef) {
+    private ItemStack statusItem(KitStatus status, KitLevel levelDef, KitProgress progress) {
         String preco = !levelDef.isFree() ? economyService.formatAmount(levelDef.cost()) : "";
         String moeda = !levelDef.isFree() ? economyService.getCurrencyDisplayName(levelDef.currencyId()) : "";
+        String tempo = TimeUtil.formatDuration(remainingSeconds(status, levelDef, progress));
 
-        ItemStack item = icon("botao." + status.name(), Map.of("preco", preco, "moeda", moeda));
+        ItemStack item = icon("botao." + status.name(), Map.of("preco", preco, "moeda", moeda, "tempo", tempo));
         if (status == KitStatus.CLAIMABLE || status == KitStatus.PURCHASABLE) {
             ItemMeta meta = item.getItemMeta();
             GuiStyle.glow(meta);
             item.setItemMeta(meta);
         }
         return item;
+    }
+
+    /** Mesma conta do AlkaKitsExpansion#remainingCooldown, mas tambem cobre o delay
+     * de compra (ON_BUY_COOLDOWN) - a expansion PAPI so cobre o cooldown de resgate. */
+    private long remainingSeconds(KitStatus status, KitLevel levelDef, KitProgress progress) {
+        long now = System.currentTimeMillis() / 1000L;
+        if (status == KitStatus.ON_CLAIM_COOLDOWN) {
+            if (progress.lastClaimEpochSeconds() <= 0) return 0;
+            return Math.max(0, levelDef.cooldownSeconds() - (now - progress.lastClaimEpochSeconds()));
+        }
+        if (status == KitStatus.ON_BUY_COOLDOWN) {
+            if (progress.lastBuyEpochSeconds() <= 0) return 0;
+            return Math.max(0, levelDef.buyDelaySeconds() - (now - progress.lastBuyEpochSeconds()));
+        }
+        return 0;
     }
 
     private ItemStack buildInfoItem() {

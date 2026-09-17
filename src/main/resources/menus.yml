@@ -130,12 +130,16 @@ alkakits-preview:
       lore:
         - "<gray>Voce comprou um nivel deste"
         - "<gray>kit recentemente."
+        - " "
+        - "<gray>Disponivel em: <yellow>{tempo}</yellow>"
     ON_CLAIM_COOLDOWN:
       material: CLOCK
       name: "<yellow>⏳ Aguarde o cooldown."
       lore:
         - "<gray>Voce ja reivindicou este"
         - "<gray>kit recentemente."
+        - " "
+        - "<gray>Disponivel em: <yellow>{tempo}</yellow>"
     INSUFFICIENT_FUNDS:
       ia-item: boxpixstudio:cross_v1
       material: GOLD_NUGGET

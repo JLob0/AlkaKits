@@ -76,7 +76,7 @@ public final class VoucherManager {
     }
 
     public enum RedeemResult {
-        SUCCESS, NOT_A_VOUCHER, ALREADY_REDEEMED, KIT_NOT_FOUND
+        SUCCESS, NOT_A_VOUCHER, ALREADY_REDEEMED, KIT_NOT_FOUND, NO_SPACE
     }
 
     public RedeemResult redeem(Player player, ItemStack item) {
@@ -91,6 +91,11 @@ public final class VoucherManager {
         Kit kit = kitManager.getKit(voucher.kitId());
         if (kit == null || !kit.hasLevel(voucher.level())) {
             return RedeemResult.KIT_NOT_FOUND;
+        }
+        // checa espaco ANTES de consumir o voucher fisico - senao um inventario cheio
+        // faria o jogador perder o voucher sem ganhar nada em troca.
+        if (!claimService.hasSpaceFor(player, kit, voucher.level())) {
+            return RedeemResult.NO_SPACE;
         }
         if (!repository.tryRedeemVoucher(voucherId, player.getUniqueId())) {
             return RedeemResult.ALREADY_REDEEMED;

@@ -7,7 +7,9 @@ import com.alkacode.kits.model.KitProgress;
 import com.alkacode.kits.model.KitStatus;
 import com.alkacode.kits.model.Requirement;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -101,11 +103,44 @@ public final class KitClaimService {
         return null;
     }
 
+    /**
+     * Simula (sem alterar o inventario real) se cabem tanto os itens do kit quanto as
+     * pecas de armadura atualmente equipadas que serao deslocadas pra dar lugar as
+     * novas - e' o mesmo conjunto que {@link #giveItems} de fato vai inserir.
+     */
     private boolean hasInventorySpace(Player player, KitLevel levelDef) {
-        if (levelDef.items().isEmpty()) {
+        List<ItemStack> toAdd = new ArrayList<>(levelDef.items());
+        toAdd.addAll(displacedArmor(player.getInventory(), levelDef));
+        if (toAdd.isEmpty()) {
             return true;
         }
-        return player.getInventory().firstEmpty() != -1;
+        Inventory simulation = Bukkit.createInventory(null, 36);
+        simulation.setContents(player.getInventory().getStorageContents());
+        for (ItemStack item : toAdd) {
+            if (!simulation.addItem(item.clone()).isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /** Pecas de equipamento atuais que o novo nivel do kit vai sobrescrever - precisam
+     * ir pro inventario antes da troca, senao a armadura antiga desaparece (ela nunca
+     * chega a passar pelo inventario, so e substituida direto no slot de equip). */
+    private List<ItemStack> displacedArmor(PlayerInventory inventory, KitLevel levelDef) {
+        List<ItemStack> displaced = new ArrayList<>();
+        if (levelDef.helmet() != null) addIfPresent(displaced, inventory.getHelmet());
+        if (levelDef.chestplate() != null) addIfPresent(displaced, inventory.getChestplate());
+        if (levelDef.leggings() != null) addIfPresent(displaced, inventory.getLeggings());
+        if (levelDef.boots() != null) addIfPresent(displaced, inventory.getBoots());
+        if (levelDef.offhand() != null) addIfPresent(displaced, inventory.getItemInOffHand());
+        return displaced;
+    }
+
+    private void addIfPresent(List<ItemStack> list, ItemStack current) {
+        if (current != null && current.getType() != Material.AIR) {
+            list.add(current.clone());
+        }
     }
 
     // -------------------------------------------------------------------- acoes
@@ -163,9 +198,20 @@ public final class KitClaimService {
      * o atual; se for igual ou menor, so da os itens de novo (reclaim) sem regredir o
      * progresso do jogador.
      */
+    /** Checagem de espaco standalone, sem side effects - usada por fluxos que precisam
+     * decidir antes de consumir algo fisico (ex: voucher) se vao conseguir entregar. */
+    public boolean hasSpaceFor(Player player, Kit kit, int level) {
+        KitLevel levelDef = kit.getLevel(level);
+        return levelDef != null && hasInventorySpace(player, levelDef);
+    }
+
     public boolean grantDirect(Player player, Kit kit, int level) {
         KitLevel levelDef = kit.getLevel(level);
         if (levelDef == null) {
+            return false;
+        }
+        if (!hasInventorySpace(player, levelDef)) {
+            feedbackService.fire(player, KitStatus.FULL_INVENTORY, kit, levelDef);
             return false;
         }
         giveItems(player, levelDef);
@@ -181,12 +227,16 @@ public final class KitClaimService {
 
     private void giveItems(Player player, KitLevel levelDef) {
         PlayerInventory inventory = player.getInventory();
-        for (ItemStack item : levelDef.items()) {
+
+        List<ItemStack> toAdd = new ArrayList<>(levelDef.items());
+        toAdd.addAll(displacedArmor(inventory, levelDef));
+        for (ItemStack item : toAdd) {
             var leftover = inventory.addItem(item.clone());
             for (ItemStack overflow : leftover.values()) {
                 player.getWorld().dropItem(player.getLocation(), overflow);
             }
         }
+
         if (levelDef.helmet() != null) inventory.setHelmet(levelDef.helmet().clone());
         if (levelDef.chestplate() != null) inventory.setChestplate(levelDef.chestplate().clone());
         if (levelDef.leggings() != null) inventory.setLeggings(levelDef.leggings().clone());

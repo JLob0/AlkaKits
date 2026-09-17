@@ -2872,6 +2872,9 @@ kits:
         itens:
           - material: EMERALD
             amount: 4
+          - material: GOLDEN_APPLE
+            amount: 1
+            name: "<gold>Maca Dourada"
         comandos: []
 
   'vip+_diario':
@@ -2900,6 +2903,9 @@ kits:
         itens:
           - material: EMERALD
             amount: 8
+          - material: GOLDEN_APPLE
+            amount: 1
+            name: "<gold>Maca Dourada"
         comandos: []
 
   'vip+_semanal':
@@ -2928,6 +2934,9 @@ kits:
         itens:
           - material: EMERALD_BLOCK
             amount: 2
+          - material: ENCHANTED_GOLDEN_APPLE
+            amount: 1
+            name: "<gold>Maca do Capeta"
         comandos: []
 
   mvp_diario:
@@ -3180,6 +3189,9 @@ kits:
         itens:
           - material: NETHERITE_INGOT
             amount: 2
+          - material: GOLDEN_APPLE
+            amount: 2
+            name: "<red>Maca Dourada Drakkar"
         comandos: []
 
   drakkar_semanal:
@@ -3208,6 +3220,12 @@ kits:
         itens:
           - material: NETHERITE_BLOCK
             amount: 1
+          - material: ENCHANTED_GOLDEN_APPLE
+            amount: 1
+            name: "<red>Reliquia Dourada"
+          - material: EXPERIENCE_BOTTLE
+            amount: 4
+            name: "<green>Frasco de XP Drakkar"
         comandos: []
 
   drakkar_mensal:
@@ -3236,6 +3254,12 @@ kits:
         itens:
           - material: DRAGON_BREATH
             amount: 8
+          - material: ENCHANTED_GOLDEN_APPLE
+            amount: 2
+            name: "<red>Reliquia Dourada"
+          - material: EXPERIENCE_BOTTLE
+            amount: 16
+            name: "<green>Frasco de XP Drakkar"
         comandos: []
 
   # ------------------------------------------------- kits de boas-vindas de VIP

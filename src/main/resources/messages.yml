@@ -28,6 +28,7 @@ voucher:
   ja-usado: "<yellow>✖ Esse voucher ja foi resgatado."
   kit-inexistente: "<red>✖ O kit desse voucher nao existe mais."
   invalido: "<red>✖ Esse item nao e um voucher valido."
+  sem-espaco: "<red>✖ Seu inventario nao tem espaco pra receber os itens desse voucher."
 
 # Mensagem de chat disparada junto com o feedback (som/particula/titulo/fireworks) de
 # cada resultado - ver FeedbackService e config.yml -> feedback.

@@ -44,6 +44,7 @@ public final class VoucherRedeemListener implements Listener {
             case ALREADY_REDEEMED -> player.sendMessage(messages.get("voucher.ja-usado"));
             case KIT_NOT_FOUND -> player.sendMessage(messages.get("voucher.kit-inexistente"));
             case NOT_A_VOUCHER -> player.sendMessage(messages.get("voucher.invalido"));
+            case NO_SPACE -> player.sendMessage(messages.get("voucher.sem-espaco"));
         }
     }
 }
